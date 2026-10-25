@@ -1,0 +1,8 @@
+# K=1 beta=1 mu=0.5 eps=0.03 k_eff=2mu/(B n^2)=1.063
+#  q   MC E[lam^-q] (se)     bound   bound/MC    lam_bar^-q*C?  (MC*(lam_bar)^q)
+  1.0  1.9719E-001 (1.51E-003)  1.0152E+000     5.15       3.2865
+  1.5  1.4715E-001 (1.54E-003)          NaN      NaN      10.0123
+  2.0  1.3870E-001 (1.74E-003)          NaN      NaN      38.5267
+  2.5  1.5009E-001 (2.11E-003)          NaN      NaN     170.2068
+  3.0  1.7579E-001 (2.69E-003)          NaN      NaN     813.8648
+# I eigenvalues: 1.4538E-001 1.6866E+001   det I = 2.4521E+000   eps*lam_max = 0.506   lam_min/eps = 4.8461

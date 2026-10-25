@@ -9,3 +9,4 @@ latex/patch_tex.py
 latex/patch_B.py
 latex/patch_*.py
 latex/fix_*.py
+code/*.exe
