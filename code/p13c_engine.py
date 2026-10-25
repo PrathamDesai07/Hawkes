@@ -12,7 +12,7 @@ def run(beta, eps, mu_fn, mu_max, eta, n, seed, Iev, mu_ref, mu_hi=4.0, w_share=
     ws = np.ones(K)/K if w_share is None else np.asarray(w_share); al = (1-eps)*ws*beta
     th = np.concatenate([[mu_ref], al]); F = Iev/eta; S = np.zeros(K); Tt = 0.0
     lo = np.concatenate([[0.1], np.full(K, 0.01)]); hi = np.concatenate([[mu_hi], beta*0.98]); cvec = np.concatenate([[0.0], 1/beta]); rbud = 1 - eps/2
-    rec = {k: [] for k in ('U','N','sF','lev','dF2','q','ne','proj','lp','lpgap','cF')}
+    rec = {k: [] for k in ('U','N','sF','lev','dF2','q','ne','proj','lp','lpgap','cF','vI')}
     Ih = np.linalg.cholesky(np.linalg.inv(Iev)); ugrid = np.concatenate([[0.0], np.logspace(-2, 1.5, 40)])
     for i in range(n):
         mu0 = mu_fn(Tt); thstar0 = np.concatenate([[mu0], al])
@@ -35,7 +35,7 @@ def run(beta, eps, mu_fn, mu_max, eta, n, seed, Iev, mu_ref, mu_hi=4.0, w_share=
             Sg = S[None, :]*np.exp(-np.outer(ugrid, beta)); phis = np.hstack([np.ones((len(ugrid), 1)), Sg]); lam_u = mu0 + Sg@al
             lp = np.max(np.einsum('ij,jk,ik->i', phis, Fpi, phis)/((1-eta)*cminus*lam_u**2))
             lpg = lev
-            for k, val in (('U', v@Fp@v), ('N', vN@F@vN), ('sF', sv@Fi@sv), ('lev', lev), ('dF2', dvec@F@dvec), ('q', np.trace(Fpi@dJ)),
+            for k, val in (('vI', v@Iev@v), ('U', v@Fp@v), ('N', vN@F@vN), ('sF', sv@Fi@sv), ('lev', lev), ('dF2', dvec@F@dvec), ('q', np.trace(Fpi@dJ)),
                            ('ne', math.sqrt(max((thn-thstar1)@F@(thn-thstar1), 0)) - math.sqrt(max((y-thstar1)@F@(y-thstar1), 0))),
                            ('proj', float(np.max(np.abs(thn-y)) > 1e-12)), ('lp', lp), ('lpgap', lpg),
                            ('cF', np.min(np.linalg.eigvalsh(Ih.T@(eta*Fp)@Ih)))):

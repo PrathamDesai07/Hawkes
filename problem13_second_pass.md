@@ -1,5 +1,7 @@
 # Problem 13, second pass: resolving the four caveats of the first pass
 
+> Third pass (projection, high-probability, Step-3 constant, K>=2 A4, drift): see `problem13_third_pass.md`.
+
 Extends [problem13_tracking_bound.md](problem13_tracking_bound.md). The first pass proved Theorem TR with four weaknesses: (1) the assumptions A1–A4 were measured, not derived; (2) constants were 12–100× loose; (3) a jump cost of D²/η² instead of D²/η; (4) step-hold drift, K = 1 numerics. This note resolves 1 (for K = 1), 3 and 4 completely, and 2 partly, with the code checks in §7. Re-derive the key steps yourself; all numerical checks are K = 1 or K = 2.
 
 ## 0. Summary
