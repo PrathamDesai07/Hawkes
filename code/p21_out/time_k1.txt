@@ -1,0 +1,11 @@
+# timing K=1 eps=0.1 n=200000 (microseconds per event, minimum of 3 passes; data generation excluded)
+newton            1.578 us/event   (315.5 ms total)
+hw (mirror)       0.082 us/event   (16.4 ms total)
+ls (EWLS)         0.387 us/event   (77.5 ms total)
+batch MLE refit time vs n (cold start from the near start, then one warm-started refit):
+  n=   1000: cold refit      0.74 ms (4 Newton its)   warm refit (already at optimum)     0.60 ms   -> 0.741 us per event of data per refit
+  n=  10000: cold refit      7.59 ms (4 Newton its)   warm refit (already at optimum)     7.44 ms   -> 0.759 us per event of data per refit
+  n= 100000: cold refit     95.03 ms (4 Newton its)   warm refit (already at optimum)    70.70 ms   -> 0.950 us per event of data per refit
+  n= 200000: cold refit    184.44 ms (4 Newton its)   warm refit (already at optimum)   149.32 ms   -> 0.922 us per event of data per refit
+batch refits at the 17 geometric checkpoints (warm-started chain): total 549.6 ms = 2.748 us/event amortised over n = 200000
+keeping the batch estimate current after EVERY event with one Newton step on all past data: cost per event = (time of one Newton iteration at size k) ~ 45879.3 us at k = n = 200000, average over k <= n: 22939.6 us/event
