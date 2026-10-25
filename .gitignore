@@ -10,3 +10,4 @@ latex/patch_B.py
 latex/patch_*.py
 latex/fix_*.py
 code/*.exe
+code/p20_data/events.bin
