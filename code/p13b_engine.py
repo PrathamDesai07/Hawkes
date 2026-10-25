@@ -20,7 +20,7 @@ def run(beta, eps, mu_fn, mu_max, eta, n, seed, Iev, mu_ref, w_share=None, burn=
     th = np.concatenate([[mu_ref], al]); F = Iev/eta; S = np.zeros(K); Tt = 0.0
     Ih = np.linalg.cholesky(np.linalg.inv(Iev))       # Iev^{-1} = Ih Ih^T  (whitening: Ih^T X Ih)
     vxi = np.zeros(d); vd = np.zeros(d); first = True
-    rec = {k: [] for k in ('U','Uxi','Ud','vI','vdI','vxiI','q','x','lev','cF','dF2','dI','lhs_d','rhs_d','lhs_x','rhs_x','lhs_r','rhs_r','sF','sumcheck','clip')}
+    rec = {k: [] for k in ('U','Uxi','Ud','vI','vdI','vxiI','q','x','lev','cF','dF2','dI','lhs_d','rhs_d','lhs_x','rhs_x','lhs_r','rhs_r','sF','sumcheck','clip','trIdF','Egap')}
     rng_w = np.random.default_rng(seed+7); nclip = [0]
     for i in range(n):
         mu0 = mu_fn(Tt); thstar0 = np.concatenate([[mu0], al])
@@ -45,7 +45,7 @@ def run(beta, eps, mu_fn, mu_max, eta, n, seed, Iev, mu_ref, w_share=None, burn=
                            ('lhs_d', np.sum((IG@vd)*(F@(IG@vd)))), ('rhs_d', (1-eta)*Ud - (1-lev)*(vd@dF@vd)),
                            ('lhs_x', np.sum((IG@vxi)*(F@(IG@vxi)))), ('rhs_x', (1-eta)*Uxi - (1-lev)*(vxi@dF@vxi)),
                            ('lhs_r', np.sum((IG@wr)*(F@(IG@wr)))), ('rhs_r', (1-eta)*(wr@Fp@wr) - (1-lev)*(wr@dF@wr)),
-                           ('sF', sv@Fi@sv), ('sumcheck', np.max(np.abs(v - vxi - vd))), ('clip', 0.0)):
+                           ('sF', sv@Fi@sv), ('trIdF', np.trace(np.linalg.inv(Iev)@dF)), ('Egap', np.trace(np.zeros((1,1)))+float(np.sum(wg)*0)+(mu_fn(Tt)*w+ (al@S)*(1-e[0])/beta[0] if len(beta)==1 else 0.0)), ('sumcheck', np.max(np.abs(v - vxi - vd))), ('clip', 0.0)):
                 rec[k].append(val)
         # updates
         vxi_new = IG@vxi - Fi@sv; vd_new = IG@vd - IG@dvec

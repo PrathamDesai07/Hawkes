@@ -147,9 +147,10 @@ Moments, exponential tail, contraction, exact rate $\gamma$ & \Pt{} & constants 
 $K=1$ Fisher formulas; Theorem~\ref{thm:A} (all three regimes) & \Pt{} & $\eps\to0$ at fixed $\mu,\beta$\\
 Cold-start lower bound $\ln T$ & \Pt{} & coefficients conjectural\\
 Path-term bound for the ridge pair, any $K$, $k_K>1$ & \Pt{} & does not by itself imply inconsistency: needs $\TV(\pi_\theta,\pi_{\theta'})$ ($K=1$: Thm.~\ref{thm:Tprime}); any-$K$ inconsistency is Thm.~\ref{thm:V}\\
-Divergence for $k_K<1$ (lower bound) & \Pt{} & no matching upper bound / estimator\\
+Divergence of expected information, $k_K<1$ & \Pt{} & does not imply consistency\\
+Matching upper bound $\mathcal I_T^{-1/2}$ (Thm.~\ref{thm:UB}) and non-consistency at $\eps=c/T$ for every $k$ (Thm.~\ref{thm:NC}) & \Pt{}/\Ps{} & $K=1$, $\alpha$ known; NC needs $\TV(\pi_\theta,\pi_{\theta'})$\\
 Efficient information for $K\ge2$, $k_K<1$; $k_K=1$ & \Ot{} & numerics only\\
-Spectrum: three tiers & \Pt{}/\Nt{} & all tiers bounded below (Thm.~\ref{thm:tangent}); upper bounds only for the ridge; eigenvector convergence numerical\\
+Spectrum: three tiers & \Ps{} & all tiers bounded above and below (Thm.~\ref{thm:tangent}, Thm.~\ref{thm:tiers}); eigenvector convergence rate $O(\eps/g)$; constants loose; $k_K>1$\\
 $\lambda_{\min}(I)$ truncation bound & \Ps{} & Lemma~\ref{lem:moments} constants; $20$--$400\times$ loose\\
 Tangent minorant: lower bound for every eigenvalue (Thm.~\ref{thm:tangent}) & \Pt{} & exact moment systems solved in 60-digit arithmetic (not interval arithmetic); within $1.3$--$4\times$ of Monte Carlo\\
 Regret reduction (Prop.~\ref{prop:reg}), box, projection ($K=1$) & \Pt{} & a-priori box\\
@@ -163,7 +164,9 @@ Minimax lower bound (Prop.~\ref{prop:LB}) & \Ps{} & hypothesis (U) uniformity; f
 Stationary TV bound with explicit constants & \Ps{} & quadrature not interval arithmetic; $\eps\lesssim10^{-4}$\\
 Impossibility, stationary record, $K=1$ & \Ps{} & as above\\
 Impossibility, stationary record, any $K$ (Thm.~\ref{thm:V}) & \Ps{} & cluster-representation proof not written; $\ln(1/\delta)$ factor\\
-Tracking formulas for the linear filter & \Pt{} & relevance to the estimators is \Nt{}\\
+Tracking formulas for the linear filter & \Pt{} & --\\
+Tracking theorem for forgetting Newton (Thm.~\ref{thm:track}) & \Ps{} & window hypothesis (W); factor $4$ loose; jump class not tight\\
+Amplitude effect: $O(A^2)$ closed form (scalar) & \Pt{} & matrix ($\alpha$ unknown) case numerical skeleton only\\
 Tracking: window rule, noise coefficient, transfer function & \Nt{} & $K\le3$, $\eps\ge0.2$\\
 Two-stage removal of the box (fixed $\eps$) & \Ot{} & --\\
 Regret lower bound with explicit $\eps(n)\to0$ & \Ot{} & none found in the literature either\\

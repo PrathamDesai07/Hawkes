@@ -1,5 +1,7 @@
 # Problem 13: tracking bound for a constant-gain Fisher-preconditioned estimator
 
+**Update (second pass):** the four weaknesses listed under "What is established and what is not" below are addressed in [problem13_second_pass.md](problem13_second_pass.md): sharp jump rate D²/η (Minkowski decomposition), continuous drift without step-hold, dimension-free proof checked at K = 1 and 2, A1/A2 derived from A4 for K = 1, A4 proved for K = 1 (stationary parameters) by a window argument that yields the condition η ≲ ε²/(κμC), and the noise constant improved about 2×. Still open: A4 for K ≥ 2, the smooth-drift constant (≈ 25× loose), and a.s. versus high-probability versions.
+
 **Status: first pass.** A theorem (Theorem TR) under stated assumptions, proved in the realised-information norm, with every step of the chain checked numerically (K = 1, α unknown). The bound has the right form and the right ε-dependence but its constants are conservative by one to two orders of magnitude; the assumptions are on realised leverage and information and are *measured*, not derived, here. Built on Problem 5 (Proposition 1, Lemma JD, leverage lemmas) and Problem 14 (drift class), and it is what Problem 15 was waiting for.
 
 ## Setting

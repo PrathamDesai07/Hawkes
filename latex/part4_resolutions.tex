@@ -1,0 +1,53 @@
+%==============================================================
+\section{Resolutions of the three open items: spectrum, tracking, observed information}\label{sec:resolutions}
+%==============================================================
+
+\subsection{Middle tier and eigenvector convergence (Problem~12)}
+The matrix $A_{\mathrm{mat}}=\mathrm{diag}(\beta)-\mathbf1\alpha\T$ has the secular equation $\sum_k\alpha_k/(\beta_k-a)=1$, whose roots satisfy $0<\gamma=a_1<\beta_1<a_2<\beta_2<\dots<a_K<\beta_K$; hence $a_j\ge\beta_1$ for $j\ge2$ independently of $\eps$. With $\ell_{j,k}=\alpha_k/(\beta_k-a_j)$ the modes $y_j=\ell_j\T S$ satisfy $\sum_k\ell_{j,k}=1$.
+
+\begin{lemma}[fast modes]\label{lem:modes}\Pt{}
+$\cA y_j=-a_jy_j+\mu$; each event adds exactly $1$ to every $y_j$; $\cA(y_j^2)=-2a_jy_j^2+2\mu y_j+\lambda$; $y_1=Z$ is the Perron variable.
+\end{lemma}
+\begin{lemma}[Lyapunov bound]\label{lem:fastLyap}\Pt{}
+Let $W=Z+z$, $c_\lambda=\min(\mu/z,b-\gamma)$, $B_z=\max(\mu/z,B-\gamma)$, $c_1=\max(\mu,B_z)$, and assume $z\ge1$, $\gamma\le a_j/4$, $B_z/z\le a_j/4$. Then for $j\ge2$
+\[
+\cA\frac{y_j^2}{W}=-\frac{2a_jy_j^2}{W}+y_j^2\Big[\frac{\gamma Z-\mu}{W^2}+\frac\lambda{W^2(W+1)}\Big]+\frac\lambda{W+1}+2y_j\Big[\frac\mu W-\frac\lambda{W(W+1)}\Big]\ \le\ -a_j\frac{y_j^2}W+B_z+\frac{2c_1^2}{a_jz},
+\]
+hence $\E_\pi[y_j^2/\lambda]\le C_{Y,j}:=[B_z+2c_1^2/(a_jz)]/(a_jc_\lambda)$, independent of $\eps$.
+\end{lemma}
+(The identity was verified symbolically with exact derivatives; the inequality on $5\,721$ random state--mode pairs without violation.)
+\begin{theorem}[three tiers, $k_K>1$]\label{thm:tiers}\Ps{}
+Let $s_{\min}$ be the smallest singular value of $[\ell_2,\dots,\ell_K]$ and $C_{\mathrm{mid}}=(K-1)\max_jC_{Y,j}/s_{\min}^2$. Then $\lambda_{K-1}(I)\le C_{\mathrm{mid}}$; with the ridge vector, $\lambda_K(I)\le2\max(\rho_\eps,C_{\mathrm{mid}})/(1-c_\eps)$, $c_\eps=O(\eps)$; $\lambda_{\max}(I)\le\tr I=O(1/\eps)$. Combined with Theorem~\ref{thm:tangent}: top $\Theta(1/\eps)$; $K-1$ middle eigenvalues in $[\lambda_j(N),C_{\mathrm{mid}}]$ (both $\eps$-independent); ridge $\le\rho_\eps=O(\eps)$ (Theorem~\ref{thm:E}). If $\lambda_2(I)\ge g>0$ and $v_1$ is the smallest eigenvector, $\sin^2\angle(v_1,e_r)\le\rho_\eps/g$ (Davis--Kahan).
+\end{theorem}
+\Nt{} ($K=2$, $\beta=(1,2)$, $\mu=1.5$): $C_{\mathrm{mid}}=1.427,1.424,1.423$ at $\eps=0.1,0.03,0.01$ (Monte Carlo middle eigenvalue $0.065$: the bound is $22\times$ loose but constant in $\eps$); tangent gap $g=0.042,0.045,0.046$ stable; with the rigorous (loose) bound on $\E[1/\lambda]$ the overlap bound is informative for $\eps\lesssim10^{-3}$.
+
+\subsection{A tracking theorem for the forgetting-Newton estimator (Problem~14)}
+With $F_i=(1-\eta)F_{i-1}+\Delta F_i$, comparator $\theta^*_i=\theta^*(t_{i-1})$, $v_i=\theta_i-\theta^*_i$, $D_i=\norm{\theta_{i+1}-\theta^*_{i+1}}_{F_i}^2$, $d_i=\theta^*_{i+1}-\theta^*_i$:
+\begin{proposition}[recursion]\label{prop:trackrec}\Pt{}
+For every $\rho>0$: $D_i\le(1+\rho)[(1-\eta)D_{i-1}+X_i-2\ip{g_i}{v_i}+G_i]+(1+1/\rho)\norm{d_i}_{F_i}^2$, and $\E[X_i-2\ip{g_i}{v_i}\mid\cG_{i-1}]\le\E[\Xi_i\mid\cG_{i-1}]$ ($\Xi_i$ the in-gap drift energy). With $\rho=\eta/2$: $\E D_i\le(1-\eta/2)\E D_{i-1}+(1+\eta/2)(\E G_i+\E\Xi_i)+(1+2/\eta)\E\norm{d_i}_{F_i}^2$.
+\end{proposition}
+\begin{theorem}[tracking error]\label{thm:track}\Ps{}
+If the window satisfies $(c_F/\eta)I_{ev}\preceq F_{i-1}\preceq(C_F/\eta)I_{ev}$ with high probability (hypothesis W) and the leverage conditions of Theorem~\ref{thm:R} hold, then
+\[
+\overline{\E}\norm{\theta_{i+1}-\theta^*_{i+1}}_{I_{ev}}^2\ \lesssim\ \frac{2}{c_F^2}\eta d+\frac{4C_F}{c_F}\frac{\norm{d}^2_{I_{ev}}}{\eta^2},
+\]
+$d=\dim\theta$; the exact linear-filter values are $\eta d/2$ and $\norm d^2_{I_{ev}}/\eta^2$ (factor $4$ from the Young split).
+\end{theorem}
+\Nt{} ($K=1$, both parameters unknown, $\eps=0.4$, $\eta=0.004$, sinusoidal $\mu_t$, $57\,616$ gaps): recursion violated $0$ times; $\E G=0.00805$ vs $\eta d=0.008$; measured $0.0077$ vs bound $0.0463$.
+
+\paragraph{Amplitude effect.} For the mean error $\dot e=-\Gamma(t)e-\dot\mu_t$ with gain $\Gamma=hI(\mu_t)/I_{\mathrm{ref}}$ (fixed preconditioner) or $hI(\mu_t)/\tilde I(t)$ with $\dot{\tilde I}=h(-(1+A\sin\omega t)\tilde I+I(\mu_t)/I_{\mathrm{ref}})$ (data-driven window), $h=\eta r_0$, $a_1=\mathrm d\ln I/\mathrm d\ln\mu$, $a_2=I''/(2I)$, the fundamental error energy relative to the constant-gain filter is $1+C_2A^2+O(A^4)$ with
+\[
+C_2^{\mathrm{fix}}=\frac{h^2[a_1^2(h^2-2\omega^2)-a_2(h^2+4\omega^2)]}{2(h^2+\omega^2)(h^2+4\omega^2)},\qquad
+C_2^{\mathrm{ad}}=\frac{h^2[a_1^2\omega^2-2a_1\omega^2+a_2\omega^2+h^2/2]}{(h^2+\omega^2)(h^2+4\omega^2)}
+\]
+(derived symbolically by harmonic balance; agree with the exact ODE to $4$ digits at $A\le0.2$; $\eps=0.4$: $C_2^{\mathrm{fix}}=-0.39$, $C_2^{\mathrm{ad}}=+0.68$ for $\alpha$ known). The amplitude effect is thus an $O(A^2)$ gain-modulation effect caused by the dependence of the Fisher information on $\mu$ and its lag in the window; the two-parameter ($\alpha$ unknown) deterministic skeleton gives adaptive/fixed $=1.11,1.33,1.67$ at $A=0.2,0.35,0.5$ against $1.32,1.48,1.75$ measured; no closed form was derived for the matrix case.
+
+\subsection{Observed information, the matching rate and non-consistency (Problem~11)}
+\begin{theorem}[matching upper bound in terms of the observed information]\label{thm:UB}\Pt{}
+$K=1$, $\alpha$ known, $\mathcal I_T=\int_0^Tdt/\lambda_t$. The score $U(m)=\sum_i1/(m+\alpha S_{i-})-T$ decreases, $U(\mu)=M_T$ is a martingale with $\langle M\rangle=\mathcal I_T$, and $U(\mu\pm h)$ is controlled by $Q_T=\sum1/\lambda_i^2=\mathcal I_T+R_T$. Freedman and a dyadic peeling over $\mathcal I_T\in[2^jM_0,2^{j+1}M_0]$ give, with probability $\ge1-4q$, on $\{\mathcal I_T\ge M_0\}$: $|\hat\mu-\mu|\le16\sqrt2\,[\ln(2/q)+2\ln(1+\log_2(\mathcal I_T/M_0))]^{1/2}\mathcal I_T^{-1/2}$.
+\end{theorem}
+\begin{theorem}[no uniformly consistent estimator, every $k$]\label{thm:NC}\Ps{}
+$K=1$, $\eps=c/T\le\eps_0$. With $A=\{Z_0\ge H\mu/\gamma\}\cap\{\inf_{t\le T}Z_t\ge\frac12H\mu e^{-\gamma T}/\gamma\}$ one has $P(A)\ge p_H(1-C_c/H)$ (Doob on $V_t=\int e^{\gamma s}\dd M'_s$ and Chebyshev), $\lambda_t\ge x_0=\kappa\mu/\eps$ on $A$, and the KL divergence of the records stopped at $\nu=\inf\{t:\lambda_t<x_0\}$ is $\le\rho\delta^2[2(1+\eps)^2c/(\kappa\mu)+2c/\mu]$ pathwise in $T$. Le Cam on $A$ gives $P_\theta(|\hat\mu-\mu|\ge\delta/2)+P_{\theta'}(|\hat\mu-\mu'|\ge\delta/2)\ge P_\theta(A)-\TV^\nu-\TV(\pi_\theta,\pi_{\theta'})\ge p/2$ for $\delta$ small. This holds for $k_0>1$ \emph{and} $k_0<1$: divergence of the expected information for $k_0<1$ does not yield consistency.
+\end{theorem}
+\Nt{} ($\mu=0.3$, $k=0.6$; $\mu=1$, $k=2$; $c=2$; $T=100,300,900$): $P(|\hat\mu-\mu|>\mu/2)=0.42,0.40,0.40$ ($k=0.6$) and $0.33,0.35,0.33$ ($k=2$); the central quantiles of $\mathcal I_T$ grow like $T^{1-k}$ for $k=0.6$ (median $41,70,93$) and are constant for $k=2$; $P(\mathcal I_T\le10)\approx0.2$ ($k=0.6$) does not decrease; the studentised $(\hat\mu-\mu)\sqrt{\mathcal I_T}$ has standard deviation $0.9$--$1.07$.
+

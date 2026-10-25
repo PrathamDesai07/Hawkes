@@ -45,3 +45,10 @@ Items of the "weaker than it sounds" table that were improved (details in `tange
 - **Problem 12:** every eigenvalue of I is bounded below rigorously (0.23-0.85 of Monte Carlo): the three tiers are now a theorem as regards lower bounds. Still open: matching upper bounds and eigenvector convergence.
 - **Problem 5:** (a) every step of Theorem R's expected-regret proof is written (only the per-time failure bound H3 remains an input); (b) Assumption M is no longer needed: the information level comes from the tangent minorant (about 10^4 better than the truncation device for the K = 2 example).
 - **Not strengthened (honestly):** Problem 11 (a matching estimator rate for k_K < 1 needs LAMN/weak-convergence arguments; the observed information is random at O(1) relative size when eps = c/T); Problem 14 (a tracking theorem for the estimators is the content of the not-started Problem 13; the amplitude effect of the data-driven preconditioner is not derived); the multiprecision evaluations are not interval arithmetic.
+
+
+---
+## Addendum 2 (25 Oct 2026): the three items that were "not strengthened"
+- **Problem 12:** now a theorem (k_K > 1): middle tier bounded above by C_mid (eps-independent, Lyapunov argument on the exact fast modes), top Theta(1/eps), ridge O(eps), smallest eigenvector -> ridge at rate O(eps/g). Constants about 20x loose; eigenvector bound informative for eps <~ 1e-3 with the rigorous E[1/lambda] bound.
+- **Problem 14:** tracking recursion and bound proved modulo the window hypothesis (W); checked in 57,616 gaps; amplitude effect derived in closed form for the scalar case and reproduced by a two-parameter deterministic skeleton.
+- **Problem 11:** the matching upper bound exists in terms of the observed information (Theorem UB). New finding: at eps = c/T no estimator is consistent for ANY k (Theorem NC, K = 1): the expected-information divergence for k < 1 does not translate into consistency. This changes the headline of the information dichotomy: it concerns the typical accuracy (bounded vs growing like T^{1-k}), not consistency.
