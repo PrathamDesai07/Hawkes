@@ -1,0 +1,45 @@
+== Problem 21 on the Deribit BTC option-trade stream (K=3, beta=(0.1,1,10)/s, windows 13-20 UTC, 365 days, 1741732 events; evaluation period days >= 60: 1436647 events)
+best fixed parameter in hindsight over the evaluation period (in-sample): THETA pooled_test 0.0448658 0.0438924 0.0515806 2.69523 nhat 0.7600
+best fixed parameter over the whole year: THETA pooled_all 0.0457026 0.0444524 0.0551085 2.59078 nhat 0.7587
+best per-day parameter (oracle, in-sample): loss/event 1.7725; best fixed (pooled_test): 1.7951; the gap 22.6 x 1e-3 nats/event is the room that tracking can exploit
+
+method                                                                  loss/event   excess vs best fixed (1e-3 nats/event)   excess, days 60-364 total (nats)
+ours (online Newton, eta = 1/(m N_prevday)): chosen on days 0-59 -> newton_m0.05      1.7593                                   -35.81                           -51443.2
+ours (online Newton, eta = 1/(m N_prevday)): best on the test period [oracle] -> newton_m0.05      1.7593                                   -35.81                           -51443.2
+Solo-type EWLS (rho): chosen on days 0-59 -> ls_r100                        1.7866                                    -8.53                           -12248.9
+Solo-type EWLS (rho): best on the test period [oracle] -> ls_r100           1.7866                                    -8.53                           -12248.9
+HW-type constant step: chosen on days 0-59 -> hw_c0.1                       2.0104                                   215.24                           309225.8
+HW-type constant step: best on the test period [oracle] -> hw_c0.03         1.7575                                   -37.65                           -54093.3
+HW-type eta0/sqrt(i): chosen on days 0-59 -> hw_s3                          1.7756                                   -19.49                           -27999.2
+HW-type eta0/sqrt(i): best on the test period [oracle] -> hw_s3             1.7756                                   -19.49                           -27999.2
+HW-type eta0/i: chosen on days 0-59 -> hw_i3                                1.8157                                    20.57                            29547.2
+HW-type eta0/i: best on the test period [oracle] -> hw_i3                   1.8157                                    20.57                            29547.2
+batch MLE refit daily on all previous days                                  1.7966                                     1.43                             2059.5
+batch MLE refit daily on the previous 30 days                               1.7928                                    -2.37                            -3407.4
+ours growing window (eta=0, no hyperparameter)                              1.7963                                     1.17                             1687.8
+best per-day parameter (oracle, in-sample)                                  1.7725                                   -22.59                           -32456.2
+best fixed parameter, test period (in-sample)                               1.7951                                     0.00                                0.0
+
+rank by total test-period log-loss among the methods chosen on days 0-59 (plus batch and growing): newton_m0.05 < hw_s3 < ls_r100 < batch_30d < newton_g < batch_all < hw_i3 < hw_c0.1
+
+-- distance to the pooled batch MLE of the same days: e = (theta - theta_batch)' H (theta - theta_batch) (H observed information of the pooled fit; ~ chi^2_4 = 4 would be one standard error), and n_hat - n_hat(batch)
+method                                            day 5                 day 30                day 120                day 364
+newton_m5                                23.2 (-0.012)       1492.5 (-0.003)       1878.3 (+0.052)      70010.3 (-0.008)
+newton_m1                               795.7 (-0.072)      10339.4 (-0.081)       4829.0 (+0.038)      95941.4 (-0.038)
+newton_g                                  1.6 (-0.000)          1.2 (-0.002)          6.0 (-0.002)         22.8 (-0.002)
+hw_c0.1                               79655.9 (-0.270)      62528.2 (-0.432)     140693.1 (-0.330)     494249.6 (-0.353)
+hw_s1                                  5449.7 (-0.113)      25997.5 (-0.249)      19994.2 (-0.143)      83738.6 (-0.033)
+hw_i1                                  2426.5 (-0.308)      14508.1 (-0.314)      70294.3 (-0.322)     188057.5 (-0.298)
+ls_r1                                  2496.2 (+0.066)      12172.9 (+0.053)      33376.8 (+0.047)     128532.7 (+0.063)
+ls_r20000                              2289.7 (+0.056)       7707.3 (+0.038)      22616.8 (+0.072)     436478.7 (+0.073)
+ls_r2000                               2796.4 (-0.038)       9062.6 (+0.048)      25592.7 (+0.005)     529218.8 (+0.058)
+ls_r200                               14863.6 (-0.042)      11715.7 (-0.046)      51848.0 (-0.117)     858625.0 (+0.082)
+   pooled batch n_hat at those days: day 5: 0.700, day 30: 0.736, day 120: 0.760, day 364: 0.759
+
+-- CPU on the stream
+   TIME newton_m5 4.982 us/event (8678 ms)
+   TIME hw_s0.1 0.097 us/event (169 ms)
+   TIME ls_r1 0.709 us/event (1234 ms)
+   TIME ls_r2000 0.715 us/event (1245 ms)
+   TIME batch_all (daily warm refit on all previous days) 281.397 us/event (490118 ms total for 364 refits; events seen by refits grow linearly)
+   TIME batch cold refit on the full year: 1954 ms = 1.122 us per data event

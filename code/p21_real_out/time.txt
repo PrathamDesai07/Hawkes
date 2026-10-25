@@ -1,0 +1,7 @@
+# timing on the real stream: 1741732 events, 365 windows (microseconds per event; one thread)
+TIME newton_m5 4.982 us/event (8678 ms)
+TIME hw_s0.1 0.097 us/event (169 ms)
+TIME ls_r1 0.709 us/event (1234 ms)
+TIME ls_r2000 0.715 us/event (1245 ms)
+TIME batch_all (daily warm refit on all previous days) 281.397 us/event (490118 ms total for 364 refits; events seen by refits grow linearly)
+TIME batch cold refit on the full year: 1954 ms = 1.122 us per data event

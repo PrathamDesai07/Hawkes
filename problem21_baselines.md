@@ -94,3 +94,51 @@ Identical simulated paths for every method (K = 1: mu = beta = 1, eps in {0.3, 0
 | a comparison table of error and runtime on the same simulated datasets | **done**: Tables 1-3 (K = 1: 3 values of eps; K = 2) with intervals |
 | ... and real datasets | **not done**: needs the tick data of Problem 20; protocol fixed above |
 | the three baselines implemented | batch MLE: exact; HW-type and Solo-type: adaptations (section 0), the closest faithful versions available without the Solo full text and without a published Hawkes-parameter version of dynamic mirror descent |
+
+## 7. Real-data half: the Deribit BTC option-trade stream (25 Oct 2026; `code/p21_real.cs`, `code/p21_real_analyze.py`, `code/p21_real_summary.txt`, raw `code/p21_real_out/`, figure `figures/p21_real.png`)
+
+**Data and protocol.** The stream of Problem 20 (4.77 M distinct-millisecond events; windows 13-20 UTC, **365 days, 1,741,732 events**; K = 3, beta = (0.1, 1, 10)/s). The truth is unknown, so accuracy is **prequential**: every method predicts before seeing each event, and the score is the point-process log-loss `l_i(theta_i) = b_i' theta_i - ln a_i' theta_i` (plus the final partial gap), which is out-of-sample by construction. It is reported as the regret per event against the **best fixed parameter in hindsight over the evaluation period** (Problem 8, hindsight regret; in-sample reference `pooled_test`) over days 60-364 (1,436,647 events). **Every family's hyperparameter is chosen on days 0-59 and frozen** (ours: `eta = 1/(m N_prevday)` with `m` in 20, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, or growing; HW-type: `eta_0` in 0.003 ... 10 for each of 3 schedules; Solo-type: `rho` = 1, 1-1/20000, 1-1/2000, 1-1/200, 1-1/100, 1-1/50, 1-1/20). The grids were extended until each family's optimum was bracketed (the first grids put the optimum at the edge for ours, HW and EWLS). Rows labelled "oracle" use the test-optimal hyperparameter and are not available in practice.
+
+**Table 4 (prequential regret per event vs the best fixed parameter, days 60-364, units 1e-3 nats per event; negative = beats every fixed parameter).**
+
+| method | hyperparameter chosen on days 0-59 | regret (1e-3 nats/event) | total (nats) |
+|---|---|---|---|
+| **ours, online Newton with forgetting** | `m = 0.05` | **-35.8** | -51,443 |
+| HW-type, `eta_0/sqrt(i)` | `eta_0 = 3` | -19.5 | -27,999 |
+| Solo-type EWLS | `rho = 1 - 1/100` | -8.5 | -12,249 |
+| batch MLE, daily refit on the previous 30 days | (window fixed in advance) | -2.4 | -3,407 |
+| ours, growing window (no hyperparameter) | - | +1.2 | +1,688 |
+| batch MLE, daily refit on all previous days | - | +1.4 | +2,060 |
+| HW-type, `eta_0/i` | `eta_0 = 3` | +20.6 | +29,547 |
+| HW-type, constant step | `eta_0 = 0.1` (**diverges**, see below) | +215.2 | +309,226 |
+| *oracle: best parameter per day (in-sample)* | - | *-22.6* | *-32,456* |
+| *oracle: HW-type constant step, best on the test period* | `eta_0 = 0.03` | *-37.7* | *-54,093* |
+
+**Findings [N].**
+1. **The stream is not stationary**: the best per-day parameter beats the best fixed parameter by 22.6e-3 nats/event, so a forgetting method can beat "the best fixed parameter in hindsight". The batch and growing-window methods cannot (+1.2, +1.4): **ours with a growing window equals the batch refit** (loss 1.7963 vs 1.7966 per event, a difference of 0.3e-3), consistent with B1 and with Problem 20 (growing-window `n_hat` equals the pooled MLE to 0.0025).
+2. **With a forgetting window chosen on development data, ours has the lowest test regret of all methods that do not use test-period information**: -35.8e-3 nats/event against -19.5 (HW-type), -8.5 (Solo-type), -2.4 (batch on 30 days). It also beats the per-day oracle (-22.6), because the forgetting window adapts *within* a day. Its development choice coincides with the test optimum (`m = 0.05` is best on both).
+3. **A constant-step mirror descent with the step tuned on the test period ties ours** (-37.7e-3 at `eta_0 = 0.03`) at 50 times lower CPU. It is not a practical competitor: the step chosen on days 0-59 (`eta_0 = 0.1`) **diverges later** (+215e-3), and the stable range is narrow: `eta_0` = 0.003, 0.01, 0.03 gives -19, -29, -38, while `eta_0` = 0.1, 0.3, 1, 3, 10 gives +215, +96, +1,387, +13,348, +1e7. Ours is stable over `m` from 0.02 to 20 (a factor 1000; regret between -35.8 and -4.0) and diverges only for `m <= 0.01` (a window shorter than 45 events, fewer than the `d^2` needed to define `F`). The reason is the preconditioning: the step of ours is measured in events of memory (free of the parameter scale), the step of mirror descent in parameter units.
+4. **Solo-type EWLS** with its best forgetting is -8.5e-3, less than a quarter of ours; without forgetting (`rho = 1`) it is +13.1e-3 (the efficiency loss of least squares, B2, plus no tracking).
+5. **Distance to the pooled batch MLE** (observed-information norm of the pooled fit; one standard error is `chi^2_4 ≈ 4`): ours with a growing window 1.6, 1.2, 6.0, 22.8 at days 5, 30, 120, 364 (`n_hat` difference -0.002 throughout); every forgetting or fixed-gain method is 10^3 to 10^5 away, as it must be, because on a non-stationary stream they do not estimate the pooled parameter. **Closeness to the pooled batch MLE is not an accuracy criterion here**; it identifies the growing-window recursion with the batch fit and nothing more.
+
+**Table 5 (CPU on the stream, one thread, K = 3, 1.74 M events).**
+
+| method | us per event | note |
+|---|---|---|
+| ours (online Newton; Fisher increment by 8-point quadrature) | 4.98 | constant in n; a closed-form increment would lower it |
+| Solo-type EWLS | 0.71 | |
+| HW-type mirror descent | 0.097 | |
+| batch MLE, daily warm refit on all previous days | 281 amortised (490 s for 364 refits) | each refit costs `O(n)`, total `O(n^2)` |
+| batch MLE, one cold refit on the whole year | 1.95 s = 1.12 per data event | |
+
+Ours is 56 times cheaper per event than a daily batch refit on all history, and beats it by 37e-3 nats/event of prequential regret; the 30-day batch refit is only -2.4e-3 and, like all batch refits, is constant within a day.
+
+## 8. Final status of Problem 21
+
+| "Done when" | status |
+|---|---|
+| a comparison table of error and runtime on the same simulated datasets | **done** (sections 4 and 5, Tables 1-3) |
+| ... and real datasets | **done on BTC option trades** (this section, Tables 4-5, figure `p21_real.png`); NSE / Bank Nifty tick data does not exist here (Problem 20), so "real" is Deribit |
+| fairness | hyperparameters chosen on development days for every family with bracketed grids; oracle rows labelled; HW and Solo remain adaptations (section 0) |
+
+Limits: one stream, one dictionary (K = 3), one split (development days 0-59, test days 60-364); the prequential regret against a fixed hindsight parameter mixes estimation error and tracking gain (the table does not separate them); the reference `pooled_test` is in-sample and is not a predictor; CPU of ours is dominated by the quadrature; the divergence of the constant-step baseline for `eta_0 >= 0.1` could be removed by a safeguard (a step-size cap), which is not part of the baseline as specified.
