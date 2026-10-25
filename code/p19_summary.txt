@@ -1,0 +1,96 @@
+== Problem 19 summary (all CIs: 95 %, bootstrap over replicates)
+
+k1_eps0.01_far  (K=1, d=2, eps=0.01, start=far, reps=64, T up to 17783)
+  P1 regret slope vs ln T: late [1778,17783] 1.05  CI [0.86,1.22]   mid [178,1778] 2.38 [1.92,2.89]   target d/2 = 1.0
+     constant c = E R - (d/2) ln T (late window mean) = 10.19
+  P2 raw error: log-log slope (late) v0: -1.32 [-1.56,-1.03], v1: -1.46 [-1.67,-1.23]   target -1
+     MSE*T (late) / (I^-1)_jj : v0: 142/108 = 1.32, v1: 0.0352/0.0208 = 1.69
+  P3 E D_n = 2.11, E e_n = 2.11   (target d = 2)
+  P4 T_exit(0.25): median 2052, p90 6517;  eps*median = 20.5   (mixing form c_exit/(beta delta^2) = 32)
+     information form  z^2 max_j (I^-1)_jj/(delta theta*_j)^2 with z^2 = 1.4: binding coordinate 0, prediction 2408, observed/predicted = 0.85
+
+k1_eps0.01_near  (K=1, d=2, eps=0.01, start=near, reps=96, T up to 17783)
+  P1 regret slope vs ln T: late [1778,17783] 1.08  CI [0.93,1.22]   mid [178,1778] 1.41 [1.22,1.62]   target d/2 = 1.0
+     constant c = E R - (d/2) ln T (late window mean) = -0.55
+  P2 raw error: log-log slope (late) v0: -1.62 [-1.82,-1.37], v1: -1.29 [-1.48,-1.07]   target -1
+     MSE*T (late) / (I^-1)_jj : v0: 205/108 = 1.90, v1: 0.0279/0.0206 = 1.36
+  P3 E D_n = 2.11, E e_n = 2.11   (target d = 2)
+  P4 T_exit(0.25): median 2373, p90 7651;  eps*median = 23.7   (mixing form c_exit/(beta delta^2) = 32)
+     information form  z^2 max_j (I^-1)_jj/(delta theta*_j)^2 with z^2 = 1.4: binding coordinate 0, prediction 2419, observed/predicted = 0.98
+
+k1_eps0.03_far  (K=1, d=2, eps=0.03, start=far, reps=96, T up to 23714)
+  P1 regret slope vs ln T: late [2371,23714] 0.92  CI [0.80,1.08]   mid [237,2371] 1.49 [1.25,1.75]   target d/2 = 1.0
+     constant c = E R - (d/2) ln T (late window mean) = 2.57
+  P2 raw error: log-log slope (late) v0: -1.19 [-1.34,-1.04], v1: -1.07 [-1.26,-0.92]   target -1
+     MSE*T (late) / (I^-1)_jj : v0: 43.4/40.5 = 1.07, v1: 0.0782/0.0651 = 1.20
+  P3 E D_n = 1.85, E e_n = 1.86   (target d = 2)
+  P4 T_exit(0.25): median 966, p90 3215;  eps*median = 29.0   (mixing form c_exit/(beta delta^2) = 32)
+     information form  z^2 max_j (I^-1)_jj/(delta theta*_j)^2 with z^2 = 1.4: binding coordinate 0, prediction 908, observed/predicted = 1.06
+
+k1_eps0.03_near  (K=1, d=2, eps=0.03, start=near, reps=160, T up to 23714)
+  P1 regret slope vs ln T: late [2371,23714] 1.10  CI [0.98,1.23]   mid [237,2371] 1.26 [1.05,1.42]   target d/2 = 1.0
+     constant c = E R - (d/2) ln T (late window mean) = -1.11
+  P2 raw error: log-log slope (late) v0: -0.95 [-1.08,-0.83], v1: -0.92 [-1.06,-0.79]   target -1
+     MSE*T (late) / (I^-1)_jj : v0: 46.6/40.7 = 1.15, v1: 0.0792/0.0638 = 1.24
+  P3 E D_n = 2.17, E e_n = 2.17   (target d = 2)
+  P4 T_exit(0.25): median 932, p90 2525;  eps*median = 28.0   (mixing form c_exit/(beta delta^2) = 32)
+     information form  z^2 max_j (I^-1)_jj/(delta theta*_j)^2 with z^2 = 1.4: binding coordinate 0, prediction 911, observed/predicted = 1.02
+
+k1_eps0.1_far  (K=1, d=2, eps=0.1, start=far, reps=160, T up to 23714)
+  P1 regret slope vs ln T: late [2371,23714] 1.08  CI [0.95,1.21]   mid [237,2371] 1.08 [0.95,1.22]   target d/2 = 1.0
+     constant c = E R - (d/2) ln T (late window mean) = -0.07
+  P2 raw error: log-log slope (late) v0: -0.95 [-1.10,-0.82], v1: -0.93 [-1.07,-0.77]   target -1
+     MSE*T (late) / (I^-1)_jj : v0: 16.6/14.9 = 1.12, v1: 0.261/0.23 = 1.14
+  P3 E D_n = 2.13, E e_n = 2.14   (target d = 2)
+  P4 T_exit(0.25): median 372, p90 1006;  eps*median = 37.2   (mixing form c_exit/(beta delta^2) = 32)
+     information form  z^2 max_j (I^-1)_jj/(delta theta*_j)^2 with z^2 = 1.4: binding coordinate 0, prediction 333, observed/predicted = 1.12
+
+k1_eps0.1_near  (K=1, d=2, eps=0.1, start=near, reps=200, T up to 23714)
+  P1 regret slope vs ln T: late [2371,23714] 0.96  CI [0.85,1.08]   mid [237,2371] 1.01 [0.89,1.13]   target d/2 = 1.0
+     constant c = E R - (d/2) ln T (late window mean) = -1.65
+  P2 raw error: log-log slope (late) v0: -0.98 [-1.11,-0.85], v1: -1.02 [-1.17,-0.88]   target -1
+     MSE*T (late) / (I^-1)_jj : v0: 15.1/14.9 = 1.01, v1: 0.262/0.229 = 1.14
+  P3 E D_n = 1.89, E e_n = 1.90   (target d = 2)
+  P4 T_exit(0.25): median 331, p90 906;  eps*median = 33.1   (mixing form c_exit/(beta delta^2) = 32)
+     information form  z^2 max_j (I^-1)_jj/(delta theta*_j)^2 with z^2 = 1.4: binding coordinate 0, prediction 334, observed/predicted = 0.99
+
+k1_eps0.3_near  (K=1, d=2, eps=0.3, start=near, reps=200, T up to 23714)
+  P1 regret slope vs ln T: late [2371,23714] 0.95  CI [0.86,1.05]   mid [237,2371] 1.01 [0.91,1.12]   target d/2 = 1.0
+     constant c = E R - (d/2) ln T (late window mean) = -1.32
+  P2 raw error: log-log slope (late) v0: -1.08 [-1.19,-0.96], v1: -1.04 [-1.16,-0.90]   target -1
+     MSE*T (late) / (I^-1)_jj : v0: 5.86/6.68 = 0.88, v1: 0.662/0.721 = 0.92
+  P3 E D_n = 1.92, E e_n = 1.92   (target d = 2)
+  P4 T_exit(0.25): median 129, p90 418;  eps*median = 38.6   (mixing form c_exit/(beta delta^2) = 32)
+     information form  z^2 max_j (I^-1)_jj/(delta theta*_j)^2 with z^2 = 1.4: binding coordinate 0, prediction 150, observed/predicted = 0.86
+
+k2_eps0.03_near  (K=2, d=3, eps=0.03, start=near, reps=64, T up to 17783)
+  P1 regret slope vs ln T: late [1778,17783] 1.41  CI [1.19,1.62]   mid [178,1778] 1.26 [1.08,1.47]   target d/2 = 1.5
+     constant c = E R - (d/2) ln T (late window mean) = -4.88
+  P2 raw error: log-log slope (late) v0: -1.10 [-1.26,-0.92], v1: -0.88 [-1.08,-0.68], v2: -0.85 [-1.04,-0.66]   target -1
+     MSE*T (late) / (I^-1)_jj : v0: 81.8/75.8 = 1.08, v1: 2.85/3.37 = 0.85, v2: 10.7/12.9 = 0.83
+  P3 E D_n = 2.95, E e_n = 2.89   (target d = 3)
+  P4 T_exit(0.25): median 924, p90 2086;  eps*median = 27.7   (mixing form c_exit/(beta delta^2) = 32)
+     information form  z^2 max_j (I^-1)_jj/(delta theta*_j)^2 with z^2 = 1.4: binding coordinate 0, prediction 754, observed/predicted = 1.23
+
+k2_eps0.1_near  (K=2, d=3, eps=0.1, start=near, reps=96, T up to 23714)
+  P1 regret slope vs ln T: late [2371,23714] 1.57  CI [1.41,1.75]   mid [237,2371] 1.50 [1.32,1.71]   target d/2 = 1.5
+     constant c = E R - (d/2) ln T (late window mean) = -3.99
+  P2 raw error: log-log slope (late) v0: -1.02 [-1.20,-0.85], v1: -0.96 [-1.11,-0.82], v2: -0.98 [-1.13,-0.83]   target -1
+     MSE*T (late) / (I^-1)_jj : v0: 31.3/28.8 = 1.09, v1: 4.33/4.23 = 1.02, v2: 15.7/15 = 1.05
+  P3 E D_n = 3.18, E e_n = 3.16   (target d = 3)
+  P4 T_exit(0.25): median 518, p90 1290;  eps*median = 51.8   (mixing form c_exit/(beta delta^2) = 32)
+     information form  z^2 max_j (I^-1)_jj/(delta theta*_j)^2 with z^2 = 1.4: binding coordinate 1, prediction 468, observed/predicted = 1.11
+
+k2_eps0.3_near  (K=2, d=3, eps=0.3, start=near, reps=96, T up to 23714)
+  P1 regret slope vs ln T: late [2371,23714] 1.44  CI [1.26,1.64]   mid [237,2371] 1.64 [1.44,1.89]   target d/2 = 1.5
+     constant c = E R - (d/2) ln T (late window mean) = -2.72
+  P2 raw error: log-log slope (late) v0: -0.98 [-1.15,-0.81], v1: -1.01 [-1.19,-0.83], v2: -1.07 [-1.24,-0.89]   target -1
+     MSE*T (late) / (I^-1)_jj : v0: 13.6/14.3 = 0.95, v1: 5.62/6.84 = 0.82, v2: 17/20.3 = 0.83
+  P3 E D_n = 2.89, E e_n = 2.89   (target d = 3)
+  P4 T_exit(0.25): median 1111, p90 3383;  eps*median = 333.3   (mixing form c_exit/(beta delta^2) = 32)
+     information form  z^2 max_j (I^-1)_jj/(delta theta*_j)^2 with z^2 = 1.4: binding coordinate 1, prediction 1251, observed/predicted = 0.89
+
+== far-start excess over near start at the end of the run:
+  eps=0.1: excess 1.77 +- 0.88;  (P_0^far - P_0^near)/2 = 0.68
+  eps=0.03: excess 3.41 +- 1.11;  (P_0^far - P_0^near)/2 = 3.07
+  eps=0.01: excess 10.66 +- 2.06;  (P_0^far - P_0^near)/2 = 10.05
