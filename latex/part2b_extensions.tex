@@ -62,3 +62,34 @@ $\sup\ge$ average over $\Theta\sim\mathrm{Unif}(\Theta_0)$; $\E_\Theta\KL(P_\The
 \end{proof}
 Hypothesis (U) is delivered, for fixed $\eps$, by Theorem~\ref{thm:Cexp} and the information level ($D_n\le C(d\ln n+x)$, $\lambda_{\min}(F_n)\ge cn$ w.h.p.), with constants continuous in the parameters, hence bounded on a compact $\Theta_0$ (stated, not proved). Together with Theorem~\ref{thm:R}: $\inf_Q\sup_{\Theta_0}\E R_n=\frac d2\ln n\,(1+o(1))$, so the leading constant $d/2$ is minimax optimal. The first-order term in time units is $\frac d2\ln T+\frac12\ln\det I$, and $\det I$ stays bounded as $\eps\to0$ for $k_0>1$ (Thm.~\ref{thm:A}), consistent with the absence of a $\ln(1/\eps)$ term in the experiments; an $\eps$-explicit bound for $\eps=\eps(n)\to0$ is open (\Ot{}).
 
+
+\subsection{Matrix-covariance lower bound, its $\eps$-dependence and the two-point form}\label{sec:lbmatrix}
+
+\begin{proposition}[two-point bound in Fisher form]\label{prop:twopoint}\Pt{}
+Let $\theta,\theta'$ lie in a ratio set ($c^-\le\lambda_{\theta'}/\lambda_\theta\le c^+$) and let both laws start from the same observed state. Then, with $\tilde c^{+}=\max(1,c^+)$, $\tilde c^-=\min(1,c^-)$ and $u=\theta'-\theta$,
+\[
+\frac{T\,u\T\bar I_Tu}{2\tilde c^{+}}\ \le\ \KL(P_\theta^T\|P_{\theta'}^T)\ \le\ \frac{T\,u\T\bar I_Tu}{2(\tilde c^{-})^2},\qquad \bar I_T=\tfrac1T\E_\theta J_T\ \ (=I(\theta)\text{ for a stationary start}).
+\]
+\end{proposition}
+\begin{proof}
+$\KL(P_\theta^T\|P_{\theta'}^T)$ is the regret of the constant predictor $\theta'$ (Lemma~\ref{lem:regid}); apply Lemma~\ref{lem:regsand} and take expectations.
+\end{proof}
+The bound is direction-resolved ($u\T Iu\sim\eps/(\mu(k_0-1))$ along the ridge, $\sim1/\eps$ along the top eigenvector), unlike the kernel-agnostic $\delta^2T\mu(1-n)$ bound of the literature.
+
+\begin{proposition}[matrix lower bound]\label{prop:LBmat}\Pt{}
+Let $\Theta\sim\mathrm{Unif}(\Theta_0)$ and suppose a statistic $\hat\theta$ satisfies $\E_\theta[(\hat\theta-\theta)(\hat\theta-\theta)\T]\preceq(\kappa_T/T)A^{-1}$ on $\Theta_0$, $A\succ0$. Then for every predictor $Q$
+\[
+\sup_{\theta\in\Theta_0}\mathrm{Reg}_T\ \ge\ I(\Theta;X)\ \ge\ \ln|\Theta_0|+\tfrac d2\ln\frac{T}{2\pi e\kappa_T}+\tfrac12\ln\det A .
+\]
+\end{proposition}
+\begin{proof}
+As Proposition~\ref{prop:LB}, with the Gaussian maximum-entropy bound $h(\Theta-\hat\theta)\le\frac12\ln\big((2\pi e)^d\det\E[(\Theta-\hat\theta)(\Theta-\hat\theta)\T]\big)$ and monotonicity of $\det$ in the Loewner order.
+\end{proof}
+
+\begin{theorem}[lower bound with explicit $\eps$-dependence]\label{thm:LBeps}\Ps{}
+For online Newton, $\hat\theta=\theta_{n+1}$ satisfies the hypothesis of Proposition~\ref{prop:LBmat} with $A=N(\theta)$ (the tangent minorant of $I$) and $\kappa_T=2c^+c_Dd\ln T$ on the good event of Theorem~\ref{thm:Cexp}. Hence for $\Theta_0=[\mu(1-w),\mu(1+w)]\times[\beta(1-\tfrac32\eps),\beta(1-\tfrac12\eps)]$ ($K=1$) and $T\eps\gg\ln T$
+\[
+\sup_{\Theta_0}\mathrm{Reg}_T\ \ge\ \ln(T\eps)+\ln(2w\mu\beta)+\tfrac12\ln\det N_*-\ln(2\pi e\kappa_T),
+\]
+and the upper bound of Theorem~\ref{thm:R} with a prior matched to $\Theta_0$ is $\ln(T\eps)+\ln(2w\mu\beta)+\tfrac12\ln\det I_*+O(1)$. For $k_0>1$ both $\det I_*$ and $\det N_*$ are bounded above and below uniformly in $\eps$, so the two bounds agree in their $\eps$-dependence up to $\tfrac12\ln\ln T+O(1)$; for $k_0<1$ the upper bound carries the additional $\tfrac{1-k_0}2\ln(1/\eps)$ of $\tfrac12\ln\det I$.
+\end{theorem}
