@@ -1,0 +1,50 @@
+%==============================================================
+\section{The notion of regret used throughout}\label{sec:regretnotion}
+%==============================================================
+
+Throughout, ``regret'' means one object, defined once here; every later theorem refers to it by name.
+Let $\lambda^*$ be the true intensity and $\hat\lambda_t=\phi(t)\T\theta_{N_{t-}+1}$ the predictive intensity of a sequential predictor (the parameter $\theta_i$ is $\cG_{i-1}$-measurable, so $\hat\lambda$ is predictable). $P^*_T$ and $Q_T$ denote the laws of the record on $[0,T]$ with intensities $\lambda^*$ and $\hat\lambda$.
+
+\begin{definition}[regret]\label{def:regret}
+The \emph{regret} of the predictor against the truth up to time $T$ (or up to $n$ events, with $T=t_n$) is
+\[
+\mathrm{Reg}_T\;:=\;\KL(P^*_T\,\|\,Q_T)\;=\;\E\,r_T,\qquad
+r_T:=\int_0^T(\hat\lambda-\lambda^*)\dd t-\sum_{t_i\le T}\log\frac{\hat\lambda(t_i)}{\lambda^*(t_i)} .
+\]
+The \emph{pseudo-regret} is $R_T:=\int_0^T\lambda^*\psi(\hat\lambda/\lambda^*)\dd t$, $\psi(r)=r-1-\log r$; in the event-indexed form $R_n=\sum_{i\le n}\int_0^{w_i}\lambda^*\psi(\lambda_{\theta_i}/\lambda^*)\dd u$.
+\end{definition}
+
+\begin{lemma}[identity]\label{lem:regid}\Pt{}
+$\E r_T=\E R_T=\mathrm{Reg}_T$, and $R_T\ge0$ pathwise. Gap by gap, $\E[r_i\mid\cG_{i-1}]=\E[R_i\mid\cG_{i-1}]$.
+\end{lemma}
+\begin{proof}
+$r_T-R_T=\int_0^T\log(\hat\lambda/\lambda^*)\,(\lambda^*\dd t-\dd N_t)$, the integral of a predictable integrand with moments of all orders against the compensated martingale $N-\int\lambda^*$; it has mean zero. The first equality $\KL=\E r_T$ is the likelihood-ratio formula for point processes.
+\end{proof}
+
+\begin{lemma}[two-sided comparison with the quadratic form]\label{lem:regsand}\Pt{}
+Let $\lambda_\theta/\lambda^*\in[c^-,c^+]$ on a gap, $\tilde c^+=\max(1,c^+)$, $\tilde c^-=\min(1,c^-)$, $v=\theta-\theta^*$ and $Q_i=v\T\Delta J_iv=\int_0^{w_i}(\phi\T v)^2/\lambda^*\dd u$. Then
+\[
+\frac{Q_i}{2\tilde c^{+}}\ \le\ R_i\ \le\ \frac{Q_i}{2(\tilde c^{-})^{2}},
+\qquad
+\frac{Q_i}{2}(1+\delta)^{-2}\le R_i\le\frac{Q_i}{2}(1-\delta)^{-2}\ \text{ if }\ |\lambda_\theta/\lambda^*-1|\le\delta .
+\]
+Moreover $Q_i/c^+\le v\T\Delta F_iv\le Q_i/c^-$.
+\end{lemma}
+\begin{proof}
+$\psi''(r)=r^{-2}$ gives $\psi(r)=(r-1)^2/(2\xi^2)$ with $\xi$ between $1$ and $r$; also $\psi(r)\ge(r-1)^2/(2\max(1,r))$ (the difference has derivative $x^2/(2(1+x)^2)\ge0$ at $r=1+x$). Multiply by $\lambda^*$ and use $\lambda^*(r-1)^2=(\phi\T v)^2/\lambda^*$.
+\end{proof}
+
+\begin{lemma}[regret controls the error of the information-weighted average]\label{lem:avgerr}\Pt{}
+With $J_n=\sum_i\Delta J_i>0$ and $\bar\theta_n=J_n^{-1}\sum_i\Delta J_i\theta_i$,
+\[
+\sum_{i\le n}Q_i=\norm{\bar\theta_n-\theta^*}^2_{J_n}+\sum_{i\le n}(\theta_i-\bar\theta_n)\T\Delta J_i(\theta_i-\bar\theta_n),
+\]
+hence, on a ratio set, $\norm{\bar\theta_n-\theta^*}_{J_n}^2\le2\tilde c^{+}R_n$ and $\E\norm{\bar\theta_n-\theta^*}^2_{J_n}\le2\tilde c^{+}\,\mathrm{Reg}_n$.
+\end{lemma}
+\begin{proof}
+Matrix-weighted bias--variance decomposition ($\sum_i\Delta J_i(\theta_i-\bar\theta_n)=0$), then Lemma~\ref{lem:regsand}.
+\end{proof}
+
+\begin{remark}[what is \emph{not} equivalent]
+The last-iterate Fisher-norm error $D_n=\norm{\theta_{n+1}-\theta^*}_{F_n}^2$ stays $O(d)$ while $\mathrm{Reg}_n$ grows like $\tfrac d2\ln T$: they are two projections of the same accumulation statement ($\E X_n\le P_0+\E G$, $\E D_n\le P_0+\E G$, Proposition~\ref{prop:reg}), not comparable by an inequality. Regret against the \emph{hindsight} maximiser $\hat\theta_n$ is $\mathrm{Reg}_n+\E[L_n(\theta^*)-L_n(\hat\theta_n)]=\mathrm{Reg}_n+\tfrac d2+o(1)$ under LAN (Wilks); the headline is against the truth $\theta^*$, the only version equal to a KL divergence and the one in Proposition~\ref{prop:LB}.
+\end{remark}

@@ -11,7 +11,7 @@ g_i=b_i-\frac{a_i}{a_i\T\theta_i},\quad \theta_{i+1}=\Pi^{F_i}_{\Theta}\big(\the
 \]
 where $\Pi^{F}_\Theta$ is the projection in the norm $\norm x_F^2=x\T Fx$ and $\Theta=\Theta_c$ is a compact box containing $\theta^*$ (Proposition~\ref{prop:projbox}).
 Put $v_i=\theta_i-\theta^*$, $P_0=\norm{v_1}_{F_0}^2$ and the \emph{pseudo-regret}
-$R_n=\sum_i\int_0^{w_i}\lambda^*\psi(\lambda_{\theta_i}/\lambda^*)\dd u$, $\psi(r)=r-1-\log r$ (its expectation equals the expected log-loss regret against $\theta^*$).
+$R_n=\sum_i\int_0^{w_i}\lambda^*\psi(\lambda_{\theta_i}/\lambda^*)\dd u$, $\psi(r)=r-1-\log r$ of Definition~\ref{def:regret}; by Lemma~\ref{lem:regid}, $\E R_n=\mathrm{Reg}_n$, the regret of Section~\ref{sec:regretnotion}.
 
 \begin{proposition}[regret reduction]\label{prop:reg}\Pt{}
 Let $\theta_i$ be $\cF_{t_{i-1}}$-measurable, $\Theta$ convex, $\theta^*\in\Theta$. Then
