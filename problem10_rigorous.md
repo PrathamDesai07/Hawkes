@@ -54,8 +54,8 @@ In particular φ_ε ≤ P_ε, the Laplace transform of a Gamma law. (Checked num
 
 *Step 2 (bounds on D_ε).* Write x = αs. Use x²/2·(1 − x/3) ≤ h(x) ≤ x²/2 and x²/2 − h(x) ≤ x³/6.
 - For x ≤ 1.5: denominator ≥ (x²/4)(αx/2), numerator ≤ x³/6, so D_ε ≤ 4/(3α).
-- For x ≥ 1.5, D_ε is bounded by a constant (numerator ≤ x²/2, denominator ≥ h(1.5)αx/2).
-- For x ≥ 1: x²/2 − h(x) ≥ 0.132 x² (the ratio is increasing in x and equals 0.132 at x = 1) and, for ε ≤ 1/4, the denominator is ≤ αx². So D_ε(s) ≥ 0.13/β for s ≥ 1/α, and hence **F_ε(u) ≤ exp(−0.13 μ (u − 1/α))** uniformly in small ε.
+- For x ≥ 1.5, D_ε ≤ x/(α h(x)) (numerator ≤ x²/2, denominator ≥ h(x)·αx/2), and h(x)/x is increasing, so D_ε ≤ 1.5/(α h(1.5)) < 2.1/α. (An earlier draft bounded the denominator by h(1.5)αx/2, which would only give a bound growing linearly in x; corrected on audit.)
+- For x ≥ 1: x²/2 − h(x) ≥ 0.132 x² (the ratio is increasing in x and equals 0.132 at x = 1) and the denominator is ≤ αx². (Crude proof: with h(x) ≤ x and x ≥ 1 the denominator is at most (α/2)x²(1 + ε/(1−ε))(1 + 2ε/(1−ε)), which is ≤ αx² for ε ≤ 1/5; an earlier draft said ε ≤ 1/4, where this crude product is 1.11αx². Numerically the true ratio den/(αx²) is at most 0.62 at ε = 0.2 and 0.67 at ε = 0.25 over x ≥ 1 and β ∈ {0.5, 1, 3}, so the claim holds with room; the proof should be stated for ε ≤ 1/5.) So D_ε(s) ≥ 0.13/β for s ≥ 1/α, and hence **F_ε(u) ≤ exp(−0.13 μ (u − 1/α))** uniformly in small ε.
 - Pointwise, D_ε → D₀, so by dominated convergence F_ε → F₀ locally uniformly. Also, for u ≤ 1.5/α the bound D_ε ≤ 4/(3α) gives F_ε(u) ≥ exp(−4βμu/(3α)); this is the form used in Step 3 for small u, which is all that is needed there.
 
 *Step 3, case k₀ > 1.* m_ε/ε = ∫₀^∞ (1 + av)^{−k_ε} F_ε(εv) dv. As ε → 0, F_ε(εv) ≥ exp(−4βμεv/(3α)) → 1, and the integrand is ≤ (1 + βv/4)^{−(1+k₀)/2} for small ε, which is integrable. Dominated convergence gives m_ε/ε → ∫₀^∞ (1 + βv/2)^{−k₀} dv = (2/β)/(k₀ − 1) = 2/(2μ − β).

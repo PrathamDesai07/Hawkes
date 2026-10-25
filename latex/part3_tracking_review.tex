@@ -125,12 +125,12 @@ General-$K$ ``Theorem V'', ``Lemma S'' & Thm.~\ref{thm:V}, Lemma~\ref{lem:S}\\\b
 \subsection{Inconsistencies between the notes that remain}
 
 \begin{enumerate}[nosep]
-\item \textbf{Label clashes} (three ``Theorem B'', three ``Theorem C'', two ``Theorem T'', two ``Lemma F'', ``Lemma 3'' in two senses). Resolved here; should be resolved in the notes before any paper is written.
-\item \textbf{Drift note, stale paragraphs.} Section F2 still contains ``empirically the lag term should carry a constant $c_{\mathrm{lag}}\approx1.8\pm0.2$'' and the statement that the excess is ``independent of $\eps$, $\eta$ and of the amplitude''; both are contradicted by section R1 (amplitude-dependent, $1.3$--$1.75$) and R0 (retracted). The table of ``caveats resolved'' still says the $K=2$ bias excess ``agrees with $K=1$''. These sentences should be struck.
+\item \textbf{Label clashes} (three ``Theorem B'', three ``Theorem C'', two ``Theorem T'', two ``Lemma F'', ``Lemma 3'' in two senses). Resolved here; the map for the notes is in \texttt{LABELS.md}.
+\item \textbf{Drift note, stale paragraphs} \emph{(cleaned in the notes on this date; kept here as a record).} Section F2 still contains ``empirically the lag term should carry a constant $c_{\mathrm{lag}}\approx1.8\pm0.2$'' and the statement that the excess is ``independent of $\eps$, $\eta$ and of the amplitude''; both are contradicted by section R1 (amplitude-dependent, $1.3$--$1.75$) and R0 (retracted). The table of ``caveats resolved'' still says the $K=2$ bias excess ``agrees with $K=1$''. These sentences should be struck.
 \item \textbf{Noise convention.} The header defines $\sigma^2(\eps)=r/(2\eff)$ and writes the noise term as $\eta\sigma^2$; the derivation section writes the stationary variance as $\eta\sigma^2/2$. With Prop.~\ref{prop:noise} these agree only if $\sigma_\xi^2=r/\eff$ in the derivation and $\sigma^2=a=r/(2\eff)$ in the header. One convention should be used.
 \item \textbf{Path-length bound.} $V_T^2/(2\eta T)$ vs the derivable $V_T^2/(\eta T)$ (Prop.~\ref{prop:pathlen}).
 \item \textbf{Jump term units.} ``$JD^2/(\eta T)$'' is correct only in event units and only up to the factor $\frac12$ of Prop.~\ref{prop:tanh} ($\rho D^2/(2\eta r)$ in time units).
-\item \textbf{Which regime has been proved vs tested.} Assumption~\ref{ass:M} and Theorem~\ref{thm:Tprime} are certified for $k_0=2$ only for $\eps\le10^{-4}$, whereas all regret experiments were run at $\eps\in[0.03,0.3]$. The theorem and the experiments do not overlap in $\eps$; the experiments support the rate, the proof supports the constant $d/2$ only in the far regime.
+\item \textbf{Which regime has been proved vs tested.} \emph{(Resolved.)} Assumption~\ref{ass:M} was originally certified only for $\eps\le10^{-4}$ via the Gamma comparator while all experiments used $\eps\in[0.03,0.3]$; Proposition~\ref{prop:Mexact} now certifies it by exact Fourier quadrature for $\eps\le0.3$, $k_0\in[0.6,4]$ (quadrature, not interval arithmetic). Theorem~\ref{thm:Tprime} (TV with explicit constants) remains informative only for $\eps\lesssim10^{-4}$, but the regret theorem no longer depends on it.
 \item \textbf{Observation model.} The impossibility (``$\mu$ is not consistently estimable when $k_K>1$'') is a statement about the stationary or conditional experiment. For the empty-start record the baseline information diverges at least like $\ln T$ for every $k$ (Prop.~\ref{prop:cold}); the streaming algorithms of Section~\ref{sec:regret} act in the latter setting. The project decision (C4 uses stationary observation) must be stated explicitly in any paper.
 \item \textbf{Target form of the regret.} The original target $(d/2)\log T+C\log(1/\eps)+\text{burn-in}$ is not contradicted. Empirically $\E R_n-\log T_n$ is flat in $\eps$ in time units and $\approx-(d/2)\log(1/\eps)$ in events; Theorem~\ref{thm:R} gives an additive constant $O(\eps^{-2}\ln(1/\eps))$, a proof artefact, not a lower bound.
 \item \textbf{Status of the earlier K1 summary.} The statement ``stationary-record impossibility, $K=1$: proved'' should read ``proved modulo Theorem~\ref{thm:Tprime}, whose constant chain is hand-derived but evaluated by floating-point quadrature, and informative only for $\eps\lesssim10^{-4}$''.
@@ -155,14 +155,17 @@ Conditional regret theorem (corrected) & \Ps{} & leverage assumptions\\
 Information concentration, exponential tails & \Ps{} & Assumption~\ref{ass:M}; rate constants $10^5$ off\\
 E5 exponential tail for $G_n$ & \Pt{} & given leverage conditions\\
 Bootstrap with exponential tails & \Ps{} & as above\\
-Expected regret $(\tfrac12+o(1))d\ln T+C$ & \Ps{} & $K=1$, $k_0>1$, box, $\eps\le10^{-4}$ for the certified Assumption M\\
+Expected regret $(\tfrac12+o(1))d\ln T+C$, $K=1$ & \Ps{} & box (cost: Prop.~\ref{prop:boxcost}); Assumption M by Prop.~\ref{prop:Mexact}\\
+Expected regret, general $K$ (Thm.~\ref{thm:RK}) & \Ps{} & constants uninformative; numerics $K=2$ only\\
+Minimax lower bound (Prop.~\ref{prop:LB}) & \Ps{} & hypothesis (U) uniformity; fixed $\eps$\\
 Stationary TV bound with explicit constants & \Ps{} & quadrature not interval arithmetic; $\eps\lesssim10^{-4}$\\
 Impossibility, stationary record, $K=1$ & \Ps{} & as above\\
 Impossibility, stationary record, any $K$ (Thm.~\ref{thm:V}) & \Ps{} & cluster-representation proof not written; $\ln(1/\delta)$ factor\\
 Tracking formulas for the linear filter & \Pt{} & relevance to the estimators is \Nt{}\\
 Tracking: window rule, noise coefficient, transfer function & \Nt{} & $K\le3$, $\eps\ge0.2$\\
-$K\ge2$ regret (projection, Assumption M, Theorem F, bootstrap) & \Ot{} & --\\
-Regret lower bound for any algorithm, explicit $\eps$ & \Ot{} & none found in the literature either\\\bottomrule
+Two-stage removal of the box (fixed $\eps$) & \Ot{} & --\\
+Regret lower bound with explicit $\eps(n)\to0$ & \Ot{} & none found in the literature either\\
+Three-tier-aware preconditioning for $K\ge2$ & \Ot{} & --\\\bottomrule
 \end{tabular}
 \end{center}
 
@@ -171,9 +174,8 @@ The $K=1$ information structure (bounded / logarithmic / divergent) is the Hawke
 
 \subsection{Open problems, in order of value}
 \begin{enumerate}[nosep]
-\item Remove the a-priori box and certify Assumption~\ref{ass:M} for moderate $\eps$ (or give a proof of the regret theorem that does not need it).
-\item $K\ge2$ for the whole regret chain: QP projection, Gamma-type comparator for the joint law (or an alternative anti-concentration), three-tier preconditioning.
-\item A regret lower bound for arbitrary algorithms with explicit $\eps$-dependence.
+\item Two-stage removal of the box for fixed $\eps$; uniformity (U) for the lower bound; an $\eps$-explicit lower bound for $\eps(n)\to0$.
+\item $K\ge2$: usable constants (exploit the three-tier structure; the present $C_K$ is uninformative), $K\ge3$ and $\eps<0.3$ regret numerics.
 \item Interval-arithmetic evaluation of $\Phi$, and an analytic Hessian bound for the two-Gamma KL.
 \item A matching upper bound for $k<1$ (LAMN-type structure).
 \item Analytic derivation of the amplitude effect in tracking; $K\ge4$; $\eps<0.4$ at $K\ge2$; the Piggott--Solo full text.

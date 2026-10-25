@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 latex/fix_and_check.py
+latex/patch_tex.py
 *.aux
 *.log
 *.out

@@ -97,7 +97,7 @@ On $I_j$: $v\T a=(v_0+v_1c_j)+v_1(s-c_j)$, so $(v\T a)^2\ge\frac12(v_0+v_1c_j)^2
 \end{proof}
 
 \begin{assumption}[M]\label{ass:M}
-$m:=\min_j\E_\pi h_j>0$. Numerically $m\approx0.15$ ($I_1$), $0.05$ ($I_2$) at $\eps=0.3,0.1,0.03$ ($k_0=2$). A rigorous lower bound for $k_0=2$, $\eps\le10^{-4}$ is Corollary~\ref{cor:M} below.
+$m:=\min_j\E_\pi h_j>0$. Numerically $m\approx0.15$ ($I_1$), $0.05$ ($I_2$) at $\eps=0.3,0.1,0.03$ ($k_0=2$). A rigorous lower bound, valid for all $\eps\le0.3$ tested and $k_0\in[0.6,4]$, is Proposition~\ref{prop:Mexact}; for $K\ge2$ it is replaced by Theorem~\ref{thm:FK}.
 \end{assumption}
 
 \begin{theorem}[concentration of $J_T$, Chebyshev tails]\label{thm:Fconc}\Ps{} (modulo Assumption~\ref{ass:M})
@@ -201,7 +201,9 @@ Under the standing assumptions (box $\Theta_c$, exact $F$-projection, Assumption
 \emph{3.\ Good part.} Proposition~\ref{prop:E5} integrated over $x$: $\E[G\1_{\mathrm{good}}]\le A\,\E\logdet F_n+O(1)$ with $A=(1+\eta)(1+\eps')c^+r(\bar x)/(1-\eps''/2)\to1+O(\eta)$ for $t\ge T_1(\eta)$; $\E\logdet(F_n/F_0)\le d\ln T_n+O(1)$ by the concentration of $J_n/T$; the bad part of $G$ is controlled by Cauchy--Schwarz, $\E G_i^2\le\mathrm{poly}$, giving a convergent integral $\int e^{-c\gamma t/2}\dd t$.
 \emph{4.\ Constant.} $C=O\!\big(\mu\,d\ln(1/(\eps\delta))/(\beta\eps^2\delta^2)\big)$ in order (cost of critical slowing-down; not a sharp rate).
 \end{proof}
-Inputs and limits: Theorem~\ref{thm:E3}/\ref{thm:Fconc} (rate constants $\sim10^5$ conservative), Assumption~\ref{ass:M} (certified only for $k_0=2$, $\eps\le10^{-4}$, Corollary~\ref{cor:M}), the a-priori box ($\Ot$ to remove), $K=1$ only. Observed slope of $\E R_n$ against $\ln T_n$: $\approx0.9$ vs $d/2=1$ (\Nt{}).
+Inputs and limits: Theorem~\ref{thm:E3}/\ref{thm:Fconc} (rate constants $\sim10^5$ conservative), Assumption~\ref{ass:M} (certified by Proposition~\ref{prop:Mexact} for the whole experimental range of $\eps$; Corollary~\ref{cor:M} is the older Gamma-comparator certificate for $\eps\le10^{-4}$), the a-priori box (cost: Proposition~\ref{prop:boxcost}), $K=1$ here; general $K$: Theorem~\ref{thm:RK}. Observed slope of $\E R_n$ against $\ln T_n$: $\approx0.9$ vs $d/2=1$ (\Nt{}).
+
+\input{part2b_extensions}
 
 %==============================================================
 \section{The stationary record: total-variation bounds and impossibility}\label{sec:tv}
