@@ -18,11 +18,11 @@ Setting: Θ_c = {μ ∈ [μ_lo, μ_hi], α_k ∈ [α_lo,k, α_hi,k], Σα_k/β_k
 ## 2. Replacement of the two K = 1 pieces
 
 ### 2.1 The identities of Lemma E1 for general K  **[P]**
-With ω_k = α_k/(β_k − γ), Z = ωᵀS (Problem 11 notation): dZ = −(λ − μ + γZ)dt + dN (because Σβ_kω_kS_k = Σα_kS_k + γZ). Hence, with M′ = N − Λ,
- γ∫₀^T Z dt = μT + M′_T − (Z_T − Z_0),
-and Λ_T = μT + Σα_k∫S_k ∈ μT + [(b − γ), (B − γ)]·∫Z. So the lower tail of Λ_T (Lemma E2) holds with the same supermartingale exp(θM′ − θ²Λ/2), with ε replaced by γ-dependent constants:
- P(Λ_T ≤ (1 − η)μT/ε, |Z_T − Z_0| ≤ y) ≤ exp(−c_K(ημT − y)²·ε/(2μT)), with c_K > 0 depending only on (b, B, γ/b) (the lower bound Λ_T ≥ μT + (b − γ)∫Z converts the event on Λ_T into an event on M′).
-The scale is again μεT = (μ/ν̃)γT up to the factor ν̃ = Σω_k/β_k.
+With c_k = α_k/β_k, Z_c = Σc_kS_k (so Σc_k = n): dZ_c = −(λ − μ)dt + n dN. Writing N = Λ + M′ (M′ = N − Λ) gives the **exact** identity
+ εΛ_T = μT + n M′_T − (Z_c(T) − Z_c(0)),
+the integrated form of the key identity A Z_c = μ − ελ (Problem 3), valid for every K and identical to the K = 1 formula (a) of Lemma E1. Hence the lower tail of Λ_T (Lemma E2) holds verbatim:
+ P(Λ_T ≤ (1 − η)μT/ε, |Z_c(T) − Z_c(0)| ≤ y) ≤ exp(−(ημT/n − y)²ε/(2μT)),
+and the upper tail is Bernstein, with Z_c having the exponential moment of Lemma `lem:expmoment`. (An earlier draft of this note used Z_ω = ωᵀS and the inequalities (b − γ)∫Z ≤ Σα_k∫S_k ≤ (B − γ)∫Z, which lose a constant factor B·ν̃ ≥ 1 in the upper tail for K ≥ 2; the exact Z_c identity makes that unnecessary.)
 
 ### 2.2 Theorem FK: concentration of the accumulated information without Assumption M  **[P]**
 Let ψ_L(λ) = min(1, max(0, 2 − λ/L)) (equal to 1 for λ ≤ L, 0 for λ ≥ 2L, Lipschitz). Since λ\* ≤ 2L on the support of ψ_L,

@@ -54,13 +54,13 @@ $h\T F^{-1}h=[\phi\T F^{-1}\phi/\lambda^*](\tau)\cdot(\phi\T v)^2/(\lambda^*\lam
 \end{proof}
 
 \begin{lemma}[score part and $\log\det$, truncated]\label{lem:logdet}\Pt{}
-Let $E_i=\Lambda^*(\tau_i)$ (conditionally $\mathrm{Exp}(1)$ and independent of the past by the time-change theorem), $q_i:=\tr(F_{i-1}^{-1}\E[\Delta J_i\mid\text{past}])=\E[s_i\T F_{i-1}^{-1}s_i\mid\text{past}]$, and assume $\lambda_\theta\le c^+\lambda^*$, $\bar\ell_i\le\bar\ell$. For $m>0$ put $\bar x=c^+\bar\ell m/\mu^*$, $r(x)=x/\log(1+x)$, $\ell'_i=\log\det(F_i/F_{i-1})\1\{E_i\le m\}$. Then
+Let $E_i=\Lambda^*(\tau_i)$ (conditionally $\mathrm{Exp}(1)$ and independent of the past by the time-change theorem), $q_i:=\tr(F_{i-1}^{-1}\E[\Delta J_i\mid\text{past}])=\E[s_i\T F_{i-1}^{-1}s_i\mid\text{past}]$, and assume $\lambda_\theta\le c^+\lambda^*$, $\bar\ell_i\le\bar\ell$. For $m>0$ put $\bar x=\bar\ell m/(c^-\mu^*)$, $r(x)=x/\log(1+x)$, $\ell'_i=\log\det(F_i/F_{i-1})\1\{E_i\le m\}$. Then
 \[
 q_i\ \le\ c^+r(\bar x)\,\E[\ell'_i\mid\text{past}]+\frac{\bar\ell}{\mu^*}(m+1)e^{-m}.
 \]
 \end{lemma}
 \begin{proof}
-On $\{E_i\le m\}$, $\tr(F^{-1}\Delta F)\le\bar\ell c^+E_i/\mu^*\le\bar x$, so every eigenvalue $y_j$ of $F^{-1/2}\Delta FF^{-1/2}$ lies in $[0,\bar x]$ and $\sum y_j\le r(\bar x)\sum\log(1+y_j)$ by concavity; also $\Delta J\preceq c^+\Delta F$. On $\{E_i>m\}$, $\tr(F^{-1}\Delta J_i)\le\bar\ell E_i/\mu^*$ and $\E[E;E>m]=(m+1)e^{-m}$.
+On $\{E_i\le m\}$, $\tr(F^{-1}\Delta F)=\int\phi\T F^{-1}\phi/\lambda_\theta\dd u\le\bar\ell\tau/c^-\le\bar\ell E_i/(c^-\mu^*)\le\bar x$, so every eigenvalue $y_j$ of $F^{-1/2}\Delta FF^{-1/2}$ lies in $[0,\bar x]$ and $\sum y_j\le r(\bar x)\sum\log(1+y_j)$ by concavity; also $\Delta J\preceq c^+\Delta F$. On $\{E_i>m\}$, $\tr(F^{-1}\Delta J_i)\le\bar\ell E_i/\mu^*$ and $\E[E;E>m]=(m+1)e^{-m}$.
 \end{proof}
 \begin{remark}[correction to the earlier Theorem on conditional regret]
 The earlier assumption ``gap leverage $x_i\le\bar x$ almost surely'' cannot hold because $\tr(F^{-1}\Delta F)\propto E_i$ is unbounded. The truncation above is the repaired form and costs nothing in the leading constant.

@@ -115,10 +115,11 @@ General-$K$ ``Theorem V'', ``Lemma S'' & Thm.~\ref{thm:V}, Lemma~\ref{lem:S}\\\b
 \item \textbf{Problem~2 erratum.} ``$\lambda_{\min}(I)$ does not shrink with $\eps$ for $K\ge2$'' was a range artefact ($\eps\ge0.05$ measures the middle tier). For $\eps\to0$, $\lambda_{\min}\propto\eps$ for every $K$.
 \item \textbf{Diagonal clip.} The diagonal-metric projection is not non-expansive in the $F$-norm and inflates regret $\approx10\times$ at tight boxes; for $K=1$ the exact $F$-projection (Prop.~\ref{prop:projbox}) must be used.
 \item \textbf{Theorem~A, Step 2.} Two inadequate justifications (the $x\ge1.5$ bound needs convexity of $h$; the denominator bound needs the exact factor $r\le\frac13$) were repaired (Lemma~\ref{lem:gammafact}).
-\item \textbf{Initial-state gap in Corollary~E$'$.} The KL lemma compares laws with the same initial state; the stationary-record experiment has $S_0\sim\pi_\theta$ vs $\pi_{\theta'}$. Closed for $K=1$ via $\TV(\pi_\theta,\pi_{\theta'})$ (Thm.~\ref{thm:Tprime}); bypassed for all $K$ via ghost immigrants (Thm.~\ref{thm:V}).
+\item \textbf{Initial-state gap in Corollary~E$'$ (and an overstatement found in the final audit).} The KL lemma compares laws with the same initial state; the stationary experiment has $S_0\sim\pi_\theta$ vs $\pi_{\theta'}$. Closed for $K=1$ via $\TV(\pi_\theta,\pi_{\theta'})$ (Thm.~\ref{thm:Tprime}); bypassed for all $K$ via ghost immigrants (Thm.~\ref{thm:V}). In addition, the notes' claim that ``given the pre-sample state $S_0$ no estimator is consistent'' is \emph{not} implied by the KL lemma (the law of $S_0$ depends on $\theta$; with $S_0$ ancillary the information is not $T\,I$); Theorem~\ref{thm:B} and Corollary~\ref{cor:Eprime} are restated accordingly.
 \item \textbf{Theorem~7 / Lemma~7c.} The assumption ``gap leverage $x_i\le\bar x$ almost surely'' cannot hold ($\tr F^{-1}\Delta F\propto E_i\sim\mathrm{Exp}(1)$); replaced by the truncated Lemma~\ref{lem:logdet}.
 \item \textbf{$|d(y)|$ constant.} The earlier bound $31.5/\alpha$ used $|N|\le2.5x^2$ without proof; replaced by $19/\alpha$ with a complete argument ($\mathrm{Re}\,N\in[-y^2/2,0]$); true supremum $1.1429/\alpha$.
 \item \textbf{Drift study.} Peek-ahead sampling in two scripts and the retracted $c_{\mathrm{lag}}\approx1.8$ (Section~\ref{sec:tracking}).
+\item \textbf{Constant in Lemma~\ref{lem:logdet}.} The first draft bounded $\tr(F^{-1}\Delta F)$ by $\bar\ell c^+E_i/\mu^*$; the correct bound is $\bar\ell E_i/(c^-\mu^*)$ (since $\lambda_\theta\ge c^-\lambda^*$). Harmless for the leading constant ($\bar x\to0$) but wrong as written; the K=2 pathwise audit could not detect it because the iterates never reached the extreme of the box.
 \item \textbf{Test-script error (not a mathematical one).} A pointwise check of $|\Delta'|\le M_1\eps(k(e-1)+e)|G|$ initially failed because the code compared an $x$-derivative with a $t$-bound; corrected, the inequality holds.
 \end{enumerate}
 
@@ -145,7 +146,7 @@ Rank-one Hessian; expected curvature; $\lambda_{\min}$ bound & \Pt{} & stationar
 Moments, exponential tail, contraction, exact rate $\gamma$ & \Pt{} & constants carry $\beta_{\max}/\beta_{\min}$\\
 $K=1$ Fisher formulas; Theorem~\ref{thm:A} (all three regimes) & \Pt{} & $\eps\to0$ at fixed $\mu,\beta$\\
 Cold-start lower bound $\ln T$ & \Pt{} & coefficients conjectural\\
-Impossibility given $S_0$, any $K$, $k_K>1$ & \Pt{} & $\eps$ small, constants not explicit\\
+Path-term bound for the ridge pair, any $K$, $k_K>1$ & \Pt{} & does not by itself imply inconsistency: needs $\TV(\pi_\theta,\pi_{\theta'})$ ($K=1$: Thm.~\ref{thm:Tprime}); any-$K$ inconsistency is Thm.~\ref{thm:V}\\
 Divergence for $k_K<1$ (lower bound) & \Pt{} & no matching upper bound / estimator\\
 Efficient information for $K\ge2$, $k_K<1$; $k_K=1$ & \Ot{} & numerics only\\
 Spectrum: three tiers & \Pt{}/\Nt{} & ridge and top bounds proved; middle tier heuristic\\

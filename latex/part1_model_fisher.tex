@@ -210,12 +210,19 @@ $x\log(x/y)-x+y\le(x-y)^2/y$ and $1/\lambda'\le\rho/\lambda$.
 $\eff:=1/(I^{-1})_{\mu\mu}=\det I/I_{\alpha\alpha}=\dfrac{m-\eps/\mu}{1-2\eps+\eps\mu m}$. With $\eps=c/T$ and Theorem~\ref{thm:A}: $T\cdot I_{\mu\mu}\to2c/(2\mu-\beta)$, $T\cdot\eff\to c\beta/(\mu(2\mu-\beta))$ for $k_0>1$ (bounded); $\sim(2c/\beta)\ln(T/c)$ for $k_0=1$; $\sim Cc^{k_0}T^{1-k_0}$ for $k_0<1$.
 \end{proposition}
 
-\begin{theorem}[impossibility given the initial state, $K=1$]\label{thm:B}\Pt{}
-Let $\theta'=(\mu+\delta,\alpha-w\delta)$, $w\ge0$. If $\rho\,u\T I_Tu\le\frac12$ then by Pinsker and Le Cam every estimator satisfies $\max_{\theta,\theta'}\P(|\hat\mu-\mu|\ge\delta/2)\ge\frac14$.
-For stationary observation with $S_0$ revealed and $k_0>1$, $\eps=c/T$, the choice $w=I_{\mu\alpha}/I_{\alpha\alpha}\approx\eps\beta/\mu$ gives $u\T I_Tu=\delta^2T\eff\to\delta^2c\beta/(\mu(2\mu-\beta))$: $\mu$ is not consistently estimable even when $\alpha$ is unknown. For $k_0=1$ (resp.\ $k_0<1$) the error is $\gtrsim(\ln T)^{-1/2}$ (resp.\ $T^{-(1-k_0)/2}$), lower bounds only.
+\begin{theorem}[two-point bound for the stationary experiment, $K=1$]\label{thm:B}\Pt{}
+Let $Q_\theta$ be the law of $(S_0,\text{path on }[0,T])$ (or of the path alone) when the process is stationary under $\theta$, and $\theta'=(\mu+\delta,\alpha-w\delta)$, $w\ge0$, $u=\theta'-\theta$. Then, with $\rho$ as in Lemma~\ref{lem:KL},
+\[
+\TV(Q_\theta,Q_{\theta'})\ \le\ \TV(\pi_\theta,\pi_{\theta'})+\sqrt{\rho\,T\,u\T I(\theta)u\,/\,2}.
+\]
+Consequently, if the second term is $\le\frac14$ and $\TV(\pi_\theta,\pi_{\theta'})\le\frac14$ then, by Le Cam, every estimator satisfies $\max_{\theta,\theta'}\P(|\hat\mu-\mu|\ge\delta/2)\ge\frac14$.
+For $k_0>1$, $\eps=c/T$ and $w=I_{\mu\alpha}/I_{\alpha\alpha}\approx\eps\beta/\mu$: $T\,u\T I u=\delta^2T\eff\to\delta^2c\beta/(\mu(2\mu-\beta))$, so the second term is $O(\delta)$ and the \emph{path} part of the argument never obstructs consistency; for $k_0=1$ (resp.\ $k_0<1$) the same computation only yields error $\gtrsim(\ln T)^{-1/2}$ (resp.\ $T^{-(1-k_0)/2}$) for the path part.
 \end{theorem}
-\begin{remark}
-The statement needs the pre-sample state $S_0$ (equivalently the pre-sample history) to be given. For the stationary record with unobserved past one needs $\TV$ between the laws of the record; see Section~\ref{sec:tv}.
+\begin{proof}
+Chain rule for total variation: $\TV(\text{joint})\le\TV(\text{marginals of }S_0)+\E_{S_0\sim\pi_\theta}\TV(\text{conditional path laws})$; the conditional laws have the same initial state, so Pinsker and Lemma~\ref{lem:KL} give $\E\,\TV\le(\tfrac12\E\,\KL_{\mathrm{cond}})^{1/2}$ and, under stationarity, $\E_{\pi_\theta}\KL_{\mathrm{cond}}=T\,\E_\pi[\lambda\log\frac\lambda{\lambda'}-\lambda+\lambda']\le\rho T\,u\T I(\theta)u$.
+\end{proof}
+\begin{remark}[what this does and does not prove]
+The path term alone is \emph{not} a statement about the stationary experiment: the law of $S_0$ (and, with an unobserved past, of the whole record) depends on $\theta$ through $\pi_\theta$, so the term $\TV(\pi_\theta,\pi_{\theta'})$ cannot be dropped. Treating $S_0$ as ``given'' (ancillary, with a $\theta$-free law) is a different experiment, and in it the information over $[0,T]$ is not $T\,I(\theta)$ (e.g.\ from $S_0=0$ it diverges like $\ln T$, Proposition~\ref{prop:cold}). The impossibility for the stationary experiment is therefore Theorem~\ref{thm:imp1} ($K=1$, explicit $\TV(\pi_\theta,\pi_{\theta'})$ bound) and Theorem~\ref{thm:V} (any $K$, unobserved past); an earlier draft of this document and of the notes stated the path-only version as an impossibility, which was an overstatement.
 \end{remark}
 
 \begin{proposition}[ridge direction, any $K$]\label{prop:ridge}\Pt{}
@@ -268,9 +275,8 @@ For every $\eta>0$ there are $c_\eta,\eps_\eta>0$ with $\E_\pi[1/\lambda]\ge c_\
 Put $a(z)=\E_\pi[1/(Z+z)]$, so $-a'(z)=\E_\pi[1/W^2]$. The upper bound of Lemma~\ref{lem:H} with $\E\cA f_z=0$ gives $(c_0z+C_4)(-a'(z))\ge\gamma+(c_0-\mu-\gamma z-2\bar\kappa\gamma)a(z)$. For $1\le z\le\eta/\gamma$ the bracket is $\ge\theta:=c_0-\mu-\eta-2\bar\kappa\gamma>0$; integrate $-a'/a\ge\theta/(c_0z+C_4)$ over $[1,\eta/\gamma]$ ($C_4$ is independent of $z\ge1$): $a(1)\ge a(\eta/\gamma)[(c_0\eta/\gamma+C_4)/(c_0+C_4)]^{\theta/c_0}$. Jensen and $\E Z=\mu/\gamma$: $a(\eta/\gamma)\ge\gamma/(\mu+\eta)$, so $a(1)\ge c\gamma^{1-\theta/c_0}$ with $1-\theta/c_0=k_K+(\eta+2\bar\kappa\gamma)/c_0$. Finally $1/\lambda\ge1/(\max(\mu,B)(Z+1))$.
 \end{proof}
 
-\begin{corollary}[impossibility, stationary, any $K$, given the pre-sample state]\label{cor:Eprime}\Pt{}
-Let $k_K>1$, $\eps=c/T$, $\theta'=(\mu+\delta,\alpha(1-\eps\delta/\mu))$ (ridge pair, $\rho=1/(1-\eps\delta/\mu)$). By Lemma~\ref{lem:KL}, Proposition~\ref{prop:ridge} and Theorem~\ref{thm:E},
-$\KL\le\rho(1+\eps)^2cC\delta^2$, independent of $T$; hence no estimator of $\mu$ is consistent, with or without $\alpha$ known. For $k_K<1$ the $\alpha$-known information diverges ($T\,I_{\mu\mu}\gtrsim T^{1-k_K-\eta}$).
+\begin{corollary}[path-term bound, any $K$]\label{cor:Eprime}\Pt{}
+Let $k_K>1$, $\eps=c/T$, $\theta'=(\mu+\delta,\alpha(1-\eps\delta/\mu))$ (ridge pair, $\rho=1/(1-\eps\delta/\mu)$). By Lemma~\ref{lem:KL}, Proposition~\ref{prop:ridge} and Theorem~\ref{thm:E}, $\E_{\pi_\theta}\KL_{\mathrm{cond}}\le\rho(1+\eps)^2cC\delta^2$, independent of $T$, with or without $\alpha$ known. Together with a bound on $\TV(\pi_\theta,\pi_{\theta'})$ this gives inconsistency of every estimator of $\mu$ (Theorem~\ref{thm:B}); for $K\ge2$ that marginal term is open, and the inconsistency statement for the stationary record with unobserved past is Theorem~\ref{thm:V}. For $k_K<1$ the $\alpha$-known information diverges ($T\,I_{\mu\mu}\gtrsim T^{1-k_K-\eta}$).
 \end{corollary}
 \emph{Numerics} (\Nt{}): $K=2$, $\beta=(1,2)$, $\mu=1.5$: $\E[1/\lambda]/\eps=1.13,1.145$ at $\eps=0.05,0.02$ (conjectured limit $2/(2\mu-1/\nu_1)=1.2$); the explicit bound of Theorem~\ref{thm:E} is $18$--$19\times$ loose.
 

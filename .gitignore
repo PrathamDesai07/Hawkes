@@ -6,3 +6,4 @@ latex/patch_tex.py
 *.log
 *.out
 *.toc
+latex/patch_B.py

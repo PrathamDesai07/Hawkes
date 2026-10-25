@@ -25,9 +25,9 @@ Also E_i is Exp(1) and independent of the past (time-change theorem); this is wh
 Proof. On {E_i ≤ m ∀i ≤ n} (probability ≥ 1 − ne^{−m}) we have Q_i = Q'_i := min(Q_i, B̄) by E5a. Q'_i ∈ [0, B̄], E[Q'_i | past] ≤ q_i, E[Q'_i² | past] ≤ B̄ q_i. For 0 < θ ≤ 1/B̄ use e^y ≤ 1+y+(e−2)y² (y ≤ 1): exp(θΣ(Q'_i − E[Q'_i|past]) − (e−2)θ²B̄Σq_i) is a supermartingale; Ville gives, with probability ≥ 1 − e^{−x} for all j, ΣQ' ≤ ΣE[Q'|past] + (e−2)θB̄Σq + x/θ. Take θ = ε'/((e−2)B̄) (≤ 1/B̄ iff ε' ≤ e−2). ∎
 Interpretation: the fluctuation term is B̄ x/ε', which is small as soon as ℓ̄ (ln n + x)² x ≪ ε'. With ℓ̄_i ≈ C(ε)/i this is a *slowly growing* index requirement, not a burn-in on n.
 
-**Lemma E5c (conversion q → log det, truncated 7c).** Suppose λ_θ ≤ c⁺λ* on the gap and ℓ̄_i ≤ ℓ̄. Let x̄ := c⁺ℓ̄m/μ* and ℓ'_i := log det(F_i/F_{i−1})·1{E_i ≤ m} ∈ [0, b], b := d log(1+x̄). Then
+**Lemma E5c (conversion q → log det, truncated 7c).** Suppose λ_θ ≤ c⁺λ* on the gap and ℓ̄_i ≤ ℓ̄. Let x̄ := ℓ̄m/(c⁻μ*) and ℓ'_i := log det(F_i/F_{i−1})·1{E_i ≤ m} ∈ [0, b], b := d log(1+x̄). Then
  q_i ≤ c⁺ r(x̄) E[ℓ'_i | past] + (ℓ̄/μ*)(m+1)e^{−m}.
-Proof. On {E_i ≤ m}: tr(F⁻¹ΔF) ≤ ℓ̄c⁺E_i/μ* ≤ x̄, hence λ_max(F^{−1/2}ΔFF^{−1/2}) ≤ x̄ and Lemma 7c applies to ΔJ·1{E_i≤m} ⪯ c⁺ΔF·1{E≤m}. On {E_i > m}: tr(F⁻¹ΔJ_i) ≤ ℓ̄E_i/μ* so E[·; E>m] ≤ (ℓ̄/μ*)(m+1)e^{−m}. ∎
+Proof. On {E_i ≤ m}: tr(F⁻¹ΔF) = ∫φᵀF⁻¹φ/λ_θ du ≤ (ℓ̄/c⁻)τ ≤ ℓ̄E_i/(c⁻μ*) ≤ x̄ (λ_θ ≥ c⁻λ*, τ ≤ E_i/μ*), hence λ_max(F^{−1/2}ΔFF^{−1/2}) ≤ x̄ and Lemma 7c applies to ΔJ·1{E_i≤m} ⪯ c⁺ΔF·1{E≤m}. On {E_i > m}: tr(F⁻¹ΔJ_i) ≤ ℓ̄E_i/μ* so E[·; E>m] ≤ (ℓ̄/μ*)(m+1)e^{−m}. ∎
 Conversion of conditional expectations to realised sums: for ℓ' ∈ [0,b] and 0 < ε'' ≤ 1, E[e^{−θℓ'}|past] ≤ exp(−θ(1−θb/2)E[ℓ'|past]); with θ = ε''/b, Ville gives with probability ≥ 1 − e^{−x}, for all j,
  Σ E[ℓ'_i | past] ≤ (1−ε''/2)⁻¹ ( Σ ℓ'_i + b x/ε'' ) ≤ (1−ε''/2)⁻¹ ( log det(F_j/F_{i_0−1}) + b x/ε'' ).
 
