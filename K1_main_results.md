@@ -54,3 +54,6 @@ Observed: slope of E R_n against ln T_n ≈ 0.9 (ε = 0.3, 0.1, 0.03), against d
 ---
 ## Update (25 Oct 2026, later): dependencies of Theorem R
 See `K1_completion.md`. E.1 (Assumption M) closed for ε ≤ ε_M via Theorem T; E.4 (optional stopping) closed (predictable indicators, no restarts); integrability in B2 closed; C(ε) = O(μ d ln(1/(εδ))/(βε²δ²)). Remaining: known box (E.2), constants (E.3), k₀ ≤ 1 (E.6), K ≥ 2 (E.7), and the fact that Theorem T is an outline with numerically verified estimates.
+
+## Audit note (25 Oct 2026, final): rows C1/C2
+The stationary-record impossibility rows C1 and C2 are about the stationary record with **unobserved past** (K = 1: TV(pi_theta, pi_theta2) via Theorem T; any K: Theorem V). The path-term bounds (Problem 11 Theorem B, Corollaries D and E2) alone do not imply inconsistency; see final_audit.md.

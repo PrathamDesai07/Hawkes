@@ -133,3 +133,11 @@ For k < 1 (K = 1, α known) the Fisher information diverges like T^{1−k}, and 
   - Cold-start coefficients (conditional, Problem 10).
 - **Decision (2026-10-25, by you): C4 uses stationary observation (model S).** The dichotomy to state is *bounded vs divergent*: with ε_T = c/T, the information about μ stays bounded iff k_K > 1, and for k_K > 1 no estimator of μ is consistent. Cold-start results (§1 Prop 2, Theorem B.3) are remarks showing the statement is sensitive to the observation model. In the paper, state the model explicitly (the process is observed in its stationary regime, S_0 known for the lower bound).
 - As with the other notes, re-derive the KL lemma, Proposition 1 and the generator computation of Lemma H yourself before building on them; the pathwise numerical check supports the algebra but is not a proof.
+
+
+---
+## Audit correction (25 Oct 2026, final audit): what the impossibility results do and do not prove
+
+The sentences in §2 (Theorem B.1), §4 (Corollary D), §4b (Corollary E′) and §5 that say "no estimator of μ is consistent ... given S₀ / under stationary observation" are **stronger than what the KL lemma proves**. The KL lemma compares path laws that start from the same initial state; the stationary experiment starts from S₀ ~ π_θ versus π_θ′, whose laws differ. The correct two-point bound is
+ TV(Q_θ, Q_θ′) ≤ TV(π_θ, π_θ′) + √(ρ T uᵀI(θ)u / 2)  (chain rule for TV; stationarity gives E_{π_θ}KL_cond = T·E_π[λ log(λ/λ′) − λ + λ′] ≤ ρT uᵀIu).
+The path term is what Theorems B/E bound (it stays bounded when k_K > 1); the marginal term TV(π_θ, π_θ′) is needed for an impossibility statement, and treating S₀ as ancillary changes the information (from S₀ = 0 it diverges like ln T). Rigorous impossibility statements: K = 1, stationary record: `theoremA_step2_and_stationary_tv.md` (TV(π_θ, π_θ′) = O(δ), explicit constants in `thmT_explicit_constants.md`); any K, stationary record with unobserved past: `general_K_impossibility.md` (Theorem V). For K ≥ 2 with S₀ *observed*, inconsistency is open. Details: `final_audit.md` item 1.
