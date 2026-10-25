@@ -3,8 +3,7 @@ from xml.sax.saxutils import escape
 src = 'hawkes_research_problem_tracker.xlsx'
 zin = zipfile.ZipFile(src); x = zin.read('xl/worksheets/sheet1.xml').decode()
 notes = {
- 14: " THIRD PASS 2026-10-25 (problem13_third_pass.md): projection proved for exact F-norm projection (diagonal clip NOT covered); high-prob A1' via predictable leverage/stopping (A2 overshoot step open); Step-3 constant derived line by line (valid, ~1e10 conservative); A4 for K>=2 CONDITIONAL on U2 (kurtosis-type) and H1 (basis conditioning), K=2 numerics support; drift covered for mu-drift only (alpha fixed, box constant), alpha-drift open; projected jump-rate slope numerically noisy.",
- 16: " Third pass of P13 (problem13_third_pass.md) does not change these formulas; they inherit its limits (exact projection only, mu-drift only, K>=2 A4 conditional).",
+ 14: " LaTeX: part4_resolutions.tex subsection added 2026-10-25. Drift check: coupling contraction matches exact rate gamma under fast mu-drift (A=0.4,P=60); K=1 window c_win under mu-drift 0.56/0.67 (fixed metric, C=16/64), 0.66/0.80 (local metric). THIRD PASS 2026-10-25 (problem13_third_pass.md): projection proved for exact F-norm projection (diagonal clip NOT covered); high-prob A1' via predictable leverage/stopping (A2 overshoot step open); Step-3 constant derived line by line (valid, ~1e10 conservative); A4 for K>=2 CONDITIONAL on U2 (kurtosis-type) and H1 (basis conditioning), K=2 numerics support; drift covered for mu-drift only (alpha fixed, box constant), alpha-drift open; projected jump-rate slope numerically noisy.",
 }
 for row, t in notes.items():
     m = re.search(rf'<c r="M{row}"( s="\d+")[^>]*?(?:/>|><is><t[^>]*>(.*?)</t></is></c>)', x, re.S); assert m, row
