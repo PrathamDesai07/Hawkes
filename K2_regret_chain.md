@@ -75,3 +75,7 @@ The growth is logarithmic with a slope of the order (K + 1)/2 (mean 1.3 against 
 | K = 2 regret slope | [N], consistent with (K+1)/2 within scatter |
 | three-tier-aware preconditioning, sharp transients | [O] |
 | K ≥ 3 and ε < 0.3 numerics | not run |
+
+---
+## Update (25 Oct 2026): better information level
+The information level of Theorem FK can be taken from the tangent minorant of `tangent_bound.md` (lambda_*/2 = 0.0126 for the K = 2 example, against about 1e-6 for the truncation device), and Assumption M is not needed. The expected-regret proof is written in full in `theoremR_proof_complete.md`.

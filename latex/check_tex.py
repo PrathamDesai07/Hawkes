@@ -1,6 +1,6 @@
 import re, io
 from collections import Counter
-files = ['hawkes_master.tex', 'part1_model_fisher.tex', 'part2_regret.tex', 'part2b_extensions.tex', 'part3_tracking_review.tex']
+files = ['hawkes_master.tex', 'part1_model_fisher.tex', 'part2_regret.tex', 'part2b_extensions.tex', 'part1b_tangent.tex', 'part3_tracking_review.tex']
 txt = ''.join(io.open(f, encoding='utf8').read() for f in files)
 t = re.sub(r'(?<!\\)%.*', '', txt).replace('\\{', '').replace('\\}', '')
 depth = 0; bad = None
