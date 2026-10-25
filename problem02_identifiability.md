@@ -97,3 +97,20 @@ Proof. (i) 1/λ ≥ 1/L on {λ ≤ L}, so I ⪰ E[a aᵀ 1{λ≤L}]/L. (ii) For 
 ## Erratum (25 Oct 2026): the "λ_min does not shrink with ε for K ≥ 2" observation was a range artefact
 
 Above I wrote that for K ≥ 2 "λ_min(I) does **not** shrink with ε in the range tested", that cond(I) grows roughly like 1/ε, and (in the Lemma 3 comparison) that the ε/μ factor is pessimistic for K ≥ 2. My ε range stopped at 0.05. `problem12_degenerate_directions.md` explains what I was seeing: the Fisher matrix has a **middle tier** of K−1 kernel-shape modes of size O(1) set by the β-grid (≈ 0.067 for β = (1,2)), and a **ridge** along (1, −εα/μ) of size ≈ ε/(μ(k−1)); the ridge only becomes the smallest eigenvalue below ε* ≈ c_min(K, grid)·μ(k−1) (≈ 0.03 in my setting). For ε ≥ 0.05 I was measuring the middle tier. For ε → 0, λ_min(I) ∝ ε for every K (that note's Monte Carlo: 0.032, 0.015, 0.0053 at ε = 0.1, 0.03, 0.01 for K = 2, β = (1,2), μ = 1.5), so Lemma 3's ε/μ scaling is sharp in ε as ε → 0. The statements about cond ∼ 1/ε and about the bound being "conservative in ε" hold only at moderate ε. The K-dependence reported here (λ_min falling roughly ×10 per added exponential on a geometric grid at ε = 0.1) is the middle-tier collapse of that note's last table and is unaffected. I have not re-run my experiments at smaller ε.
+
+
+---
+## Update (25 Oct 2026): a closed-form dependence on K and the grid ratio (`code/p2_cauchy_closedform.py`, `code/p2_closed_chain.py`)
+
+The criterion asks for an explicit lower bound on λ_min(I) or on cond(I) in terms of K and the grid ratio. Theorem T (truncation) is explicit but contains the numerically computed λ_min(M). The following chain is closed-form (geometric grid β_k = r^{k−1}, α_k = (1−ε)β_k/K):
+
+1. **Covariance dominates a Cauchy matrix [P].** Cov_π(S) = ∫|Σw_kŜ_k(ω)|²·S_N(ω)dω/2π with Ŝ_k = 1/(β_k + iω) and S_N(ω) = E λ/|1 − φ̂(ω)|² the spectrum of N. Since |1 − φ̂| ≤ 1 + n ≤ 2, S_N ≥ E λ/4, hence **C := Cov_π(S) ⪰ (E λ/4)·G, G_ij = 1/(β_i + β_j)**, E λ = μ/ε. (Verified numerically against the exact C from the second-moment linear system in all 18 cases tried.)
+2. **Exact mean [P].** E S_k = m_k = μ/(εβ_k) (from A m = −μ1).
+3. **λ_min(M) from C [P].** For M = E[aaᵀ] = [[1, mᵀ], [m, mmᵀ + C]]: λ_min(M) ≥ min(½, λ_min(C)/(1 + 2|m|²)) ≥ λ_min(C)/(1+2|m|²) (take v = (v₀, w): (v₀ + mᵀw)² + wᵀCw, and v₀² ≤ 2(v₀+mᵀw)² + 2|m|²|w|²). Verified in all 18 cases.
+4. **Cauchy inverse in closed form [P].** (G⁻¹)_ij has magnitude 4β_iβ_jP_iP_j/(β_i+β_j), P_i = ∏_{k≠i}(β_i+β_k)/|β_i−β_k| (verified to 10⁻⁶ against numerical inversion), so **λ_min(G) ≥ 1/Σ_ij 4β_iβ_jP_iP_j/(β_i+β_j)**; for the geometric grid P_i ≤ exp(4r/(r−1)²) (from ln((1+x)/(1−x)) ≤ 2x/(1−x), x = r^{−j}, summed over j on both sides of i). The dependence on K is through the number of terms and β_max = r^{K−1}; on r through P_i, with the Hilbert-type blow-up exp(O(1/(r−1)²)) as r → 1.
+5. **Truncation [P].** λ_min(I) ≥ (1/(2L))[λ_min(M) − (E|a|⁴)^{1/2}(E λᵖ/Lᵖ)^{1/2}] with E Zᵖ ≤ C_pε⁻ᵖ (closed-form recursion, Lemma 1′ of Problem 3), E|a|⁴ ≤ 2(1 + (Σ(β_k/α_k)²)²E Z⁴), E λᵖ ≤ 2^{p−1}(μᵖ + B^pE Zᵖ).
+6. **Condition number [P].** cond(I) ≤ tr(M)/(μ·λ_min(I) bound), since 1/λ ≤ 1/μ gives λ_max(I) ≤ tr(M)/μ.
+
+**Magnitude [N]:** the closed-form chain is valid but 10³–10⁸ below the truth (e.g. K = 1, r = 2: 4.8·10⁻⁵ at ε = 0.3 against 0.139; K = 3, r = 2, ε = 0.1: 8.7·10⁻¹¹ against 0.0045), because of steps 1 and 3 (the bound λ_min(M) ≳ ε λ_min(G)/(8μΣβ_k⁻²) decays like ε where the truth is O(1)) and the moment-based tail (p capped at 14). The sharp quantitative behaviour in (K, r) is the three-tier structure of Problem 12 (middle-tier eigenvalues O(1) set by the grid, ridge ≈ ε/(μ(k−1))), which is numerical/heuristic. The erratum above (λ_min ∝ ε for every K as ε → 0) stands.
+
+**Verdict on the tracker criterion:** an explicit lower bound in terms of K and the grid ratio now exists in closed form (steps 1–5), plus the computable sharper Theorem T. **Problem 2: Done** (criterion met; constants loose; sharp scaling heuristic only).
