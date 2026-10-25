@@ -7,3 +7,5 @@ latex/patch_tex.py
 *.out
 *.toc
 latex/patch_B.py
+latex/patch_*.py
+latex/fix_*.py

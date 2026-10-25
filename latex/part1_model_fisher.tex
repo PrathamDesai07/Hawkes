@@ -280,7 +280,7 @@ Let $k_K>1$, $\eps=c/T$, $\theta'=(\mu+\delta,\alpha(1-\eps\delta/\mu))$ (ridge 
 \end{corollary}
 \emph{Numerics} (\Nt{}): $K=2$, $\beta=(1,2)$, $\mu=1.5$: $\E[1/\lambda]/\eps=1.13,1.145$ at $\eps=0.05,0.02$ (conjectured limit $2/(2\mu-1/\nu_1)=1.2$); the explicit bound of Theorem~\ref{thm:E} is $18$--$19\times$ loose.
 
-\paragraph{Open at this level.} The matching upper bound for $k_K<1$ (the score has a random, mixed-normal normaliser $\int\!\dd t/\lambda$; numerically the MLE is close to mixed normal under the observed-information scaling and heavy-tailed under the expected one); divergence of the \emph{efficient} information for $K\ge2$, $k_K<1$ (numerically $\eff/m\to1$); the borderline $k_K=1$ for $K\ge2$; cold-start coefficients.
+\paragraph{Status of the items left open here.} The ``matching upper bound for $k_K<1$'' is resolved in Section~\ref{sec:resolutions}: the achievable accuracy is $\mathcal I_T^{-1/2}$ in terms of the \emph{observed} information (Theorem~\ref{thm:UB}), and, at $\eps=c/T$, no estimator is consistent for \emph{any} $k$ (Theorem~\ref{thm:NC}), so the divergence of the expected information for $k_K<1$ does not give consistency. Still open: divergence of the \emph{efficient} information for $K\ge2$, $k_K<1$ (numerically $\eff/m\to1$); the borderline $k_K=1$ for $K\ge2$; cold-start coefficients; $K\ge2$ and the $\alpha$-unknown case of Theorems~\ref{thm:UB}--\ref{thm:NC}.
 
 %==============================================================
 \section{Spectrum of the Fisher matrix, $K\ge2$}\label{sec:spectrum}
@@ -316,6 +316,7 @@ ridge & $(1,-\eps\alpha/\mu)$ & $\approx\eps/(\mu(k-1))$ ($k>1$), $\sim\eps^k$ (
 \end{center}
 \Pt{}: $\lambda_{\min}(I)\le v\T Iv/|v|^2=O(\eps)$ for the ridge vector when $k_K>1$ (Proposition~\ref{prop:ridge} with Theorem~\ref{thm:E}); $\lambda_{\max}(I)\ge(\mu/\eps-2\mu)/|\alpha|^2$ (test vector $\alpha/|\alpha|$); for $K=1$ both are exact.
 \Nt{} (stationary Monte Carlo): the top eigenvector overlaps $1/\hat\beta$ as predicted ($0.800$, $0.571$ for $K=2,3$); the ridge value $0.533\eps$ matches $0.53\eps$ for $K=2$, $\beta=(1,2)$, $\mu=1.5$; the middle tier follows the spectral heuristic $w\T Rw\approx\frac1{2\pi}\int|a_w|^2/|D|^2\dd\omega$ to $2$--$15\%$.
+\emph{Upgrade:} the middle-tier upper bound, the top-eigenvalue upper bound and the convergence of the smallest eigenvector to the ridge direction are proved in Theorem~\ref{thm:tiers} (Section~\ref{sec:resolutions}); the spectral heuristic above is no longer needed for the orders of magnitude.\\
 At moderate $\eps$ a shape direction can be smaller than the ridge (for $K=3$, $\beta=(1,2,4)$ the smallest eigenvector is a time-scale mixture down to $\eps\approx0.007$); the smallest middle eigenvalue collapses geometrically in $K$ and grid compression ($K=5$, ratio $1.5$: $1.3\times10^{-5}$).
 \end{proposition}
 
