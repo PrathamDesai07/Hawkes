@@ -4,6 +4,8 @@
 \usepackage{booktabs,array,enumitem}
 \usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
 \usepackage{xcolor}
+\usepackage{graphicx}
+\graphicspath{{../figures/}}
 
 % ---------- theorem environments (one shared counter, numbered inside sections) ----------
 \newtheorem{theorem}{Theorem}[section]
@@ -32,6 +34,7 @@
 \renewcommand{\P}{\mathbb{P}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\eps}{\varepsilon}
+\newcommand{\lbar}{\bar\lambda}
 \newcommand{\1}{\mathbf 1}
 \newcommand{\T}{^{\top}}
 \newcommand{\cA}{\mathcal A}
@@ -66,6 +69,8 @@ $n=\sum_k\alpha_k/\beta_k=1-\eps$, $\eps\to0$.
 Each result carries a status tag: \Pt{} proved on paper, \Ps{} proved on paper modulo listed inputs,
 \Nt{} numerical only, \Ot{} open.
 Nothing here has been refereed; the proofs were written by hand in single passes and checked numerically.
+Section~\ref{sec:mis} treats misspecification (exact KL pseudo-truth, convergence of the online estimator with an active stability constraint, bias in the number of exponentials) and the position relative to the primary literature, including the corrections found by reading it.
+Section~\ref{sec:epsdep} makes the $\eps$-dependence of the regret constant explicit (a leverage-free early-phase argument, negative moments of the intensity, measured burn-in) and Section~\ref{sec:validation} reports the numerical validation: the regret notion and the lower bound, a simulation study with fitted slopes, baselines (batch MLE, Hall--Willett-type mirror descent, Solo-type least squares) and a real-data check on Deribit BTC option trades.
 Section~\ref{sec:review} is a review of the whole programme: concordance of labels, errata found,
 inconsistencies between notes, and the precise list of what remains unproved.
 No \LaTeX{} compiler was available in the environment in which this file was written, so the file
@@ -78,6 +83,8 @@ has been checked for balanced environments and braces only (see the note at the 
 \input{part2a_regret_notion}
 \input{part2_regret}
 \input{part4_resolutions}
+\input{part5_misspecification}
+\input{part6_epsilon_validation}
 \input{part3_tracking_review}
 
 \end{document}

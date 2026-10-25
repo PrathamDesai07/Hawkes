@@ -11,3 +11,7 @@ latex/patch_*.py
 latex/fix_*.py
 code/*.exe
 code/p20_data/events.bin
+refPapers/
+code/*/*.exe
+code/p17/*.pkl
+code/p17/o.bin

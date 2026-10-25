@@ -104,7 +104,11 @@ Exponential tails E1--E4; E5; ``Theorem C-exp'' & Lemmas~\ref{lem:E1},\ref{lem:E
 Bootstrap ``Theorem C'' (polynomial tails) & superseded by Thm.~\ref{thm:Cexp}\\
 Expected regret ``Theorem R'' & Thm.~\ref{thm:R}\\
 Stationary-TV ``Theorem T'', ``Lemma F'' & Thm.~\ref{thm:Tprime}, Lemma~\ref{lem:LemmaF}\\
-General-$K$ ``Theorem V'', ``Lemma S'' & Thm.~\ref{thm:V}, Lemma~\ref{lem:S}\\\bottomrule
+General-$K$ ``Theorem V'', ``Lemma S'' & Thm.~\ref{thm:V}, Lemma~\ref{lem:S}\\
+Problem~6 (explicit $\eps$-dependence) & Lemmas~\ref{lem:negmom},\ref{lem:defect},\ref{lem:earlyG}; Props.~\ref{prop:Rdecomp},\ref{prop:Dearly},\ref{prop:k0low}; Thm.~\ref{thm:eps}\\
+Problem~8 (notion of regret) & Def.~\ref{def:regret}; Lemmas~\ref{lem:regid},\ref{lem:regsand},\ref{lem:avgerr}\\
+Problem~9 (lower bound) & Props.~\ref{prop:twopoint},\ref{prop:LBmat}; Thm.~\ref{thm:LBeps}\\
+Problems~19--21 (simulation, real data, baselines) & Section~\ref{sec:validation}\\\bottomrule
 \end{tabular}
 \end{center}
 
@@ -121,6 +125,11 @@ General-$K$ ``Theorem V'', ``Lemma S'' & Thm.~\ref{thm:V}, Lemma~\ref{lem:S}\\\b
 \item \textbf{Drift study.} Peek-ahead sampling in two scripts and the retracted $c_{\mathrm{lag}}\approx1.8$ (Section~\ref{sec:tracking}).
 \item \textbf{Constant in Lemma~\ref{lem:logdet}.} The first draft bounded $\tr(F^{-1}\Delta F)$ by $\bar\ell c^+E_i/\mu^*$; the correct bound is $\bar\ell E_i/(c^-\mu^*)$ (since $\lambda_\theta\ge c^-\lambda^*$). Harmless for the leading constant ($\bar x\to0$) but wrong as written; the K=2 pathwise audit could not detect it because the iterates never reached the extreme of the box.
 \item \textbf{Test-script error (not a mathematical one).} A pointwise check of $|\Delta'|\le M_1\eps(k(e-1)+e)|G|$ initially failed because the code compared an $x$-derivative with a $t$-bound; corrected, the inequality holds.
+\item \textbf{Hypothesis (U) of Proposition~\ref{prop:LB} (Problem~9).} (U) was stated as an extra hypothesis; it is a statement about the online estimator itself and is delivered by the chain of Theorem~\ref{thm:R} (Proposition~\ref{prop:LBmat}, Theorem~\ref{thm:LBeps}); with the scalar mean-square form the term $\tfrac12\ln\det A$, which carries the $\eps$-dependence, was lost.
+\item \textbf{Problem~6 (predictions that failed).} (a) ``The start cost is $O(\ln(1/\eps))$'': it is exactly $\tfrac12P_0\propto1/\eps$ for a prior scaled to the information level. (b) ``The regret reaches slope $d/2$ at the information crossover'': it lags the information. (c) The burn-in was first read as mixing-limited and $\mu$-independent; the data fit the information form $z^2\max_j(I^{-1})_{jj}/(\delta\theta_j^*)^2$, $z^2=1.4$ (Section~\ref{sec:eps-thm}). The proof's $\eps^{-2}$ event count was confirmed to be a proof artefact (the measured potential defect is $O(1)$).
+\item \textbf{Problem~9 prediction.} A plateau of slope $(d-1)/2$ for $T\eps<1$ does not occur over the natural stability band, whose width scales with $\eps$: both Fisher directions switch off together and the Bayes regret is a function of $T\eps$ alone (Section~\ref{sec:val-reg}).
+\item \textbf{Problem~8.} The hindsight comparator is better than the truth on the sample, so the hindsight regret exceeds $\mathrm{Reg}_n$ by $\approx d/2$ (a first draft had the sign reversed).
+\item \textbf{Analysis and code slips in Problems~19--21 (not mathematical).} $\langle\mathrm{MSE}\rangle\langle T\rangle$ over a log-uniform decade is biased by $1.52$ (Jensen); the unconstrained batch MLE diverged for few events (the likelihood has no minimiser) and is constrained to the common box; two-point checks with $\delta>\eps$ in the $\alpha$-direction left the stable set and were discarded; violations of the $\psi$ sandwich at $R,Q\sim10^{-13}$ were rounding; the ``calm reference'' week first chosen for the real data contained the busiest day of the year.
 \end{enumerate}
 
 \subsection{Inconsistencies between the notes that remain}
@@ -134,7 +143,7 @@ General-$K$ ``Theorem V'', ``Lemma S'' & Thm.~\ref{thm:V}, Lemma~\ref{lem:S}\\\b
 \item \textbf{Which regime has been proved vs tested.} \emph{(Resolved.)} Assumption~\ref{ass:M} was originally certified only for $\eps\le10^{-4}$ via the Gamma comparator while all experiments used $\eps\in[0.03,0.3]$; Proposition~\ref{prop:Mexact} now certifies it by exact Fourier quadrature for $\eps\le0.3$, $k_0\in[0.6,4]$ (quadrature, not interval arithmetic). Theorem~\ref{thm:Tprime} (TV with explicit constants) remains informative only for $\eps\lesssim10^{-4}$, but the regret theorem no longer depends on it.
 \item \textbf{Headline of the information dichotomy.} The dichotomy (bounded versus divergent \emph{expected} information) was read in the notes as ``consistent estimation possible iff $k<1$''. Theorem~\ref{thm:NC} shows this reading is wrong at $\eps=c/T$: no estimator is consistent for any $k$; the dichotomy describes the \emph{typical} accuracy ($\mathcal I_T$ bounded for $k>1$, central quantiles growing like $T^{1-k}$ for $k<1$), not consistency. The wording in the notes and any paper should be changed accordingly.
 \item \textbf{Observation model.} The impossibility (``$\mu$ is not consistently estimable when $k_K>1$'') is a statement about the stationary or conditional experiment. For the empty-start record the baseline information diverges at least like $\ln T$ for every $k$ (Prop.~\ref{prop:cold}); the streaming algorithms of Section~\ref{sec:regret} act in the latter setting. The project decision (C4 uses stationary observation) must be stated explicitly in any paper.
-\item \textbf{Target form of the regret.} The original target $(d/2)\log T+C\log(1/\eps)+\text{burn-in}$ is not contradicted. Empirically $\E R_n-\log T_n$ is flat in $\eps$ in time units and $\approx-(d/2)\log(1/\eps)$ in events; Theorem~\ref{thm:R} gives an additive constant $O(\eps^{-2}\ln(1/\eps))$, a proof artefact, not a lower bound.
+\item \textbf{Target form of the regret.} \emph{(Resolved in Section~\ref{sec:epsdep}: the additive constant is $O(1)$ in $\eps$ in time units, the $\eps^{-2}$ is a proof artefact removed for the early window by Proposition~\ref{prop:Rdecomp}, and $C\ln(1/\eps)$ is the clock conversion, except $\tfrac{1-k_0}2\ln(1/\eps)$ for $k_0<1$.)} The original target $(d/2)\log T+C\log(1/\eps)+\text{burn-in}$ is not contradicted. Empirically $\E R_n-\log T_n$ is flat in $\eps$ in time units and $\approx-(d/2)\log(1/\eps)$ in events; Theorem~\ref{thm:R} gives an additive constant $O(\eps^{-2}\ln(1/\eps))$, a proof artefact, not a lower bound.
 \item \textbf{Status of the earlier K1 summary.} The statement ``stationary-record impossibility, $K=1$: proved'' should read ``proved modulo Theorem~\ref{thm:Tprime}, whose constant chain is hand-derived but evaluated by floating-point quadrature, and informative only for $\eps\lesssim10^{-4}$''.
 \end{enumerate}
 
@@ -170,13 +179,20 @@ Tracking theorem for forgetting Newton (Thm.~\ref{thm:track}) & \Ps{} & window h
 Amplitude effect: $O(A^2)$ closed form (scalar) & \Pt{} & matrix ($\alpha$ unknown) case numerical skeleton only\\
 Tracking: window rule, noise coefficient, transfer function & \Nt{} & $K\le3$, $\eps\ge0.2$\\
 Two-stage removal of the box (fixed $\eps$) & \Ot{} & --\\
-Regret lower bound with explicit $\eps(n)\to0$ & \Ot{} & none found in the literature either\\
+Regret lower bound with explicit $\eps$ and $\eps(n)\to0$ (Thm.~\ref{thm:LBeps}) & \Ps{} & $T\eps\gg\ln T$; inputs of Thm.~\ref{thm:R}; $\tfrac d2\ln\ln T$ loss; the $k_0<1$ term is not captured; none found in the literature\\
+Regret defined once; identity, sandwich, averaged-iterate lemma (Section~\ref{sec:regretnotion}) & \Pt{} & in expectation\\
+Two-point KL in Fisher form; matrix-covariance Bayes bound (Props.~\ref{prop:twopoint},\ref{prop:LBmat}) & \Pt{} & observed or ancillary start\\
+Early window without event count (Lemmas~\ref{lem:negmom}--\ref{lem:earlyG}, Prop.~\ref{prop:Rdecomp}) & \Pt{} & any $K$\\
+Early-phase defect $O(\eps^a)$, $K=1$ (Prop.~\ref{prop:Dearly}); $\eps$-explicit regret constant (Thm.~\ref{thm:eps}) & \Ps{} & information event; scaled prior; $K\ge2$ needs a mode-adapted bound\\
+Simulation study, lower-bound numerics, baselines, real-data check (Section~\ref{sec:validation}) & \Nt{} & one real stream (BTC, not NSE); Hall--Willett and Solo estimators are adaptations\\
 Three-tier-aware preconditioning for $K\ge2$ & \Ot{} & --\\\bottomrule
 \end{tabular}
 \end{center}
 
 \subsection{Position relative to the literature}
 The $K=1$ information structure (bounded / logarithmic / divergent) is the Hawkes prelimit of classical CIR theory: the exact Fisher matrix converges to the CIR matrix of Ben Alaya--Kebaier--Tran (Thm.~2.1) as $\eps\to0$ (relative difference $\approx\eps$) and the critical coefficient $2/(\beta(2\mu-\beta))$ equals their critical-case information rate; the CIR literature treats fixed sub/critical/supercritical regimes, and no local-to-critical result was found. Herrera-Mar\'in (two papers) give a two-point KL bound, the Fisher matrix and a Feller-type remark for the near-critical Hawkes likelihood. Discrete analogues in the literature are conditional/ordinary least squares (nearly critical branching with immigration; Anne--Lu--Yu--Zhou 2026 for local-to-unity affine processes), with no likelihood information bound. No Hawkes-specific regret lower bound was found. The novelty of the programme therefore rests on the online regret result (Theorem~\ref{thm:R}), the streaming impossibility statements (Theorems~\ref{thm:imp1}, \ref{thm:V}) and the tracking study, not on the Fisher dichotomy by itself. Every literature claim above was read at abstract or partial full-text level only.
+
+\paragraph{Update (25 October 2026).} The streaming-estimator literature was read at full-text level (Spreij 1986/1991, Piggott--Solo, Pasha--Solo, Rong--Nair, Wei et al.); the recursion of Section~\ref{sec:regret} is Spreij's AML recursion applied to Hawkes, and several misspecification statements were found to be known. See Section~\ref{sec:mis-lit} and the novelty corrections in Section~\ref{sec:mis-status}.
 
 \subsection{Verification record and complexity}\label{sec:verif}
 \textbf{Algebraic identities.} Thirty-four identities behind the lemmas (generator computations for $Z_c$, $Z^p$, $e^{\theta Z}$, $S_iS_jS_l$, $e^{-u\lambda}$, $e^{\theta S}$; the Perron objects $\omega,\gamma,\tilde\nu,\kappa$; Lemma~\ref{lem:H}(i)--(iv); Theorem~\ref{thm:A} step 1; the Fisher reduction, efficient information and ridge Rayleigh quotient; the identity behind Lemma~\ref{lem:C1}; the tanh and sinusoid laws) were verified symbolically with exact derivatives of the generator (\texttt{code/verify\_symbolic.py}). \textbf{Inequalities.} Eighteen families (Lemma~\ref{lem:moments} pathwise, Lemma~\ref{lem:expmoment}, Lemma~\ref{lem:G}, the elementary bounds of Lemma~\ref{lem:elem}, Lemma~\ref{lem:gammafact}, Lemma~\ref{lem:F2}, the Bernstein/MGF inequalities, the $\psi$ expansion, the tangent minorant, the Gamma tail, the path-length bounds, the entropy step) had no violation over $10^4$--$10^5$ random cases each (\texttt{code/verify\_inequalities.py}). The probabilistic theorems are chains of these steps with standard tools; they were re-derived step by step but cannot be machine-checked, and Theorem~\ref{thm:V} and the input (H3) of Theorem~\ref{thm:R} are the best targets for independent review.
@@ -185,13 +201,14 @@ The $K=1$ information structure (bounded / logarithmic / divergent) is the Hawke
 
 \subsection{Open problems, in order of value}
 \begin{enumerate}[nosep]
-\item Two-stage removal of the box for fixed $\eps$; uniformity (U) for the lower bound; an $\eps$-explicit lower bound for $\eps(n)\to0$.
-\item $K\ge2$: usable constants (exploit the three-tier structure; the present $C_K$ is uninformative), $K\ge3$ and $\eps<0.3$ regret numerics.
+\item Two-stage removal of the box for fixed $\eps$; removal of the $\tfrac d2\ln\ln T$ in Theorem~\ref{thm:LBeps} (needs $\E D_n=O(d)$) and a minorant of $1/\lambda$ that sees the $\tfrac{1-k_0}2\ln(1/\eps)$ term of $\det I$ for $k_0<1$.
+\item $K\ge2$: usable constants (exploit the three-tier structure; the present $C_K$ is uninformative), a mode-adapted leverage bound for Proposition~\ref{prop:Dearly}, $K\ge3$ regret numerics (not asymptotic at $T=3\cdot10^4$).
 \item Interval-arithmetic evaluation of $\Phi$, and an analytic Hessian bound for the two-Gamma KL.
 \item Theorems~\ref{thm:UB}--\ref{thm:NC} for $K\ge2$ and for $\alpha$ unknown; the regime $c=\eps T\to\infty$ where consistency becomes possible; the law of $\mathcal I_T$ (conjecturally $\mathcal I_T/T^{1-k}$ converges to a boundary-local-time functional).
 \item Window hypothesis (W) of the tracking theorem; the matrix amplitude-effect formula; jump-class tracking without the $1/\eta$ loss; $K\ge4$; $\eps<0.4$ at $K\ge2$; the Piggott--Solo full text.
 \item Sharper constants for Theorem~\ref{thm:tiers} (the bound on $\E[1/\lambda]$ is $\sim18\times$ loose, which limits the eigenvector bound to $\eps\lesssim10^{-3}$).
+\item Real data beyond one stream: NSE/Bank Nifty tick or trade data (not available in the working environment), a second asset or period, the online learner of Yang et al.\ and online EM as baselines, rolling-origin hyperparameter selection, a near-critical stream ($\hat n\approx0.5$--$0.8$ here).
 \end{enumerate}
 
 \subsection{Note on compilation}
-No \LaTeX{} engine was available where this file was produced; it was checked for balanced environments and braces with a script, not compiled. If compilation reports an undefined reference, the label is in the corresponding part file (\texttt{part1\_model\_fisher.tex}, \texttt{part2\_regret.tex}, \texttt{part3\_tracking\_review.tex}).
+No \LaTeX{} engine was available where this file was produced; it was checked for balanced environments and braces with a script, not compiled. The figures of Section~\ref{sec:validation} are read from \texttt{../figures} through \texttt{\textbackslash graphicspath}, and the preamble loads \texttt{graphicx}. If compilation reports an undefined reference, the label is in the corresponding part file (\texttt{part1\_model\_fisher.tex}, \texttt{part2\_regret.tex}, \texttt{part3\_tracking\_review.tex}).

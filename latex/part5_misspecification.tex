@@ -1,0 +1,277 @@
+%==============================================================
+\section{Misspecification: the exact KL pseudo-truth, convergence of the online estimator, and the bias in $K$}\label{sec:mis}
+%==============================================================
+
+This section collects the results of Problems~16--18 (contribution C6) and the corrections to novelty claims found by reading the primary literature.
+Status tags are as in Section~\ref{sec:model}.
+Sources: \texttt{problem16\_kl\_pseudotruth.md}, \texttt{problem17\_online\_convergence.md}, \texttt{problem18\_bias\_vs\_K.md}, \texttt{refpapers\_conclusions.md}, \texttt{literature\_difference\_statements.md}, \texttt{literature\_unverified\_items.md}; code in \texttt{code/p16}, \texttt{code/p17}, \texttt{code/p18}.
+All numerical results use a power-law truth, truncated to $M$ exponentials, simulated by Ogata thinning (the thinning bug of Section~\ref{sec:review} is fixed in the scripts used here).
+
+\subsection{Setting}\label{sec:mis-setting}
+
+\paragraph{Data.} $N$ is a stationary ergodic point process on $\R$ with finite positive rate $\Lambda^*$ and predictable intensity $\lambda^*_t$ with respect to its own history.
+No model is assumed for $N$; the truth may be a Hawkes process with a power-law kernel, a different dictionary, or anything else.
+We use
+\begin{itemize}[nosep]
+\item[(A1)] $\lambda^*_t>0$ almost surely (for a Hawkes truth $\lambda^*\ge\mu^*>0$);
+\item[(A2)] $\E[\lambda^*(1+\abs{a}^2)]<\infty$ and $\E[\lambda^*\log^+\lambda^*]<\infty$.
+\end{itemize}
+(For a subcritical Hawkes truth these hold: cluster sizes are Galton--Watson with Poisson offspring and have all moments.)
+
+\paragraph{Model.} With the dictionary $\{\beta_k\}$ fixed and distinct, $\lambda_\theta(t)=\theta\T a_t$, $a_t=(1,S_1(t-),\dots,S_K(t-))\T$, $S_k(t)=\int_{-\infty}^te^{-\beta_k(t-s)}\dd N_s$.
+\emph{The regressor $a_t$ is computed from the observed path, not from a simulation of the model.}
+Hence the objective below is defined for every $\theta$ with $\mu>0$, $\alpha\ge0$, including $n(\theta)\ge1$; the stability constraint $n\le1-\eps$ concerns the model as a generative object and the online algorithm, not the existence of the objective.
+Parameter sets: the cone $\Theta_\infty=\{\mu\ge\mu_{\min},\ \alpha_k\ge0\}$ and $\Theta_\eps=\{\theta\in\Theta_\infty:\ c\T\alpha\le1-\eps\}$, $c_k=1/\beta_k$, $\mu_{\min}>0$.
+
+\paragraph{Pseudo-KL rate.} With $D(x,y)=x\log(x/y)-x+y\ge0$,
+\[
+L(\theta)=\E\,D(\lambda^*_t,\lambda_\theta(t)),\qquad L(\theta)=L_0+\E[\lambda_\theta-\lambda^*\log\lambda_\theta],\quad L_0=\E[\lambda^*\log\lambda^*-\lambda^*].
+\]
+By the compensator identity, $\E[\lambda_\theta-\lambda^*\log\lambda_\theta]$ is the almost-sure limit of $-\tfrac1T\ell_T(\theta)$; so the exact KL pseudo-truth is the almost-sure limit of the batch quasi-maximum-likelihood estimator and is the target of the per-event loss $-\log(a_i\T\theta)+b_i\T\theta$ of Section~\ref{sec:regret}.
+
+\subsection{Existence, uniqueness and first-order conditions (Problem 16)}\label{sec:mis-pseudo}
+
+\begin{lemma}[derivatives]\label{lem:m-deriv}\Pt{}
+Under (A2), $L$ is finite and convex on $\Theta_\infty$ and $C^2$ in the relative interior of each face, with
+$\nabla L(\theta)=\E[a(1-\lambda^*/\lambda_\theta)]$ and $\nabla^2L(\theta)=\E[\lambda^*aa\T/\lambda_\theta^2]$.
+\end{lemma}
+\begin{proof}
+$\lambda_\theta\ge\mu_{\min}$ gives the dominating functions $\abs a(1+\lambda^*/\mu_{\min})$ and $\lambda^*\abs a^2/\mu_{\min}^2$. Convexity: $-\log$ is convex and $\lambda_\theta$ is linear in $\theta$.
+\end{proof}
+
+\begin{lemma}[strict convexity]\label{lem:m-strict}\Pt{}
+Under (A1),(A2) and distinct $\beta_k$, $\nabla^2L(\theta)\succ0$ for every $\theta\in\Theta_\infty$.
+\end{lemma}
+\begin{proof}
+If $v\T\nabla^2Lv=0$ then $v\T a_t=0$ a.s. since $\lambda^*>0$. A gap of length $>\delta$ occurs with positive probability (the Palm mean gap is $1/\Lambda^*$). On it $S_k(\tau_i+u)=s_ke^{-\beta_ku}$ with $s_k\ge1$ (the event at $\tau_i$ adds $1$ to every coordinate), so $v_0+\sum_kv_ks_ke^{-\beta_ku}=0$ on $[0,\delta]$. The left side is real analytic, hence zero for all $u$; the functions $1,e^{-\beta_1u},\dots,e^{-\beta_Ku}$ are linearly independent, so $v_0=0$ and $v_ks_k=0$, i.e.\ $v=0$.
+\end{proof}
+
+\begin{lemma}[coercivity on the cone]\label{lem:m-coerc}\Pt{}
+Under (A1),(A2), $L(\theta)\to\infty$ as $\abs\theta\to\infty$ in $\Theta_\infty$.
+\end{lemma}
+\begin{proof}
+Write $\theta=r\omega$, $\abs\omega=1$, $\omega\ge0$. Since $\E a_k=\Lambda^*/\beta_k$, $\E\lambda_\theta\ge c_0r$ with $c_0=\min(1,\Lambda^*/\beta_K)$, and $\log x\le x$ gives $\E[\lambda^*\log\lambda_\theta]\le\Lambda^*\log r+\E[\lambda^*\abs a]$. So $L\ge c_0r-\Lambda^*\log r-C\to\infty$.
+\end{proof}
+
+\begin{theorem}[existence, uniqueness, first-order conditions]\label{thm:m-exist}\Pt{}
+Assume (A1),(A2), distinct $\beta_k$.
+\begin{enumerate}[nosep,label=(\alph*)]
+\item $L$ has a unique minimiser $\theta^\dagger_\infty$ on $\Theta_\infty$ and a unique minimiser $\theta^\dagger_\eps$ on $\Theta_\eps$.
+\item (KKT) There are $\rho_0,\rho_k,\kappa\ge0$ with $\partial_\mu L(\theta^\dagger)=\rho_0$, $\partial_{\alpha_k}L(\theta^\dagger)=\rho_k-\kappa/\beta_k$, and complementary slackness $\rho_0(\mu^\dagger-\mu_{\min})=0$, $\rho_k\alpha^\dagger_k=0$, $\kappa(1-\eps-n^\dagger)=0$, where $\partial_\mu L=\E[1-\lambda^*/\lambda_{\theta^\dagger}]$ and $\partial_{\alpha_k}L=\E[S_k(1-\lambda^*/\lambda_{\theta^\dagger})]$. In the interior: $\E[a(1-\lambda^*/\lambda_{\theta^\dagger})]=0$.
+\item If $n(\theta^\dagger_\infty)\le1-\eps$ then $\theta^\dagger_\eps=\theta^\dagger_\infty$; otherwise $n(\theta^\dagger_\eps)=1-\eps$ and $\kappa>0$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(a) $L$ is continuous, strictly convex (Lemma~\ref{lem:m-strict}) and coercive (Lemma~\ref{lem:m-coerc}); $\Theta_\eps$ is compact in $\alpha$ and closed in $\mu$. (b) The constraints are affine, so KKT holds. (c) Moving from $\theta^\dagger_\eps$ towards $\theta^\dagger_\infty$ would strictly decrease $L$ while staying in $\Theta_\eps$ if the budget were slack.
+\end{proof}
+
+\begin{proposition}[rate matching]\label{prop:m-rate}\Pt{}
+$\E\lambda_\theta=\mu+n(\theta)\Lambda^*$ for every $\theta$ (because $\E S_k=\Lambda^*/\beta_k$ by stationarity of $\dd S_k=-\beta_kS_k\dd t+\dd N$). At the constrained minimiser,
+\[
+\mu^\dagger+n^\dagger\Lambda^*-\Lambda^*=\mu_{\min}\rho_0-\kappa n^\dagger .
+\]
+\end{proposition}
+\begin{proof}
+$\theta\T\nabla L(\theta)=\E\lambda_\theta-\Lambda^*$; at $\theta^\dagger$ the KKT conditions give $\theta^{\dagger\top}\nabla L=\mu^\dagger\rho_0+\sum\alpha^\dagger_k(\rho_k-\kappa/\beta_k)=\mu_{\min}\rho_0-\kappa n^\dagger$.
+\end{proof}
+
+\begin{corollary}[the stability constraint is a statement about the immigrant share]\label{cor:m-binding}\Pt{}
+(i) With $\rho_0=\kappa=0$: $\mu^\dagger=(1-n^\dagger)\Lambda^*$; in particular $n(\theta^\dagger_\infty)<1$ \emph{automatically}, although $L$ does not know about stability.
+(ii) For $\mu^\dagger>\mu_{\min}$: $\theta^\dagger_\eps=\theta^\dagger_\infty$ iff $\mu^\dagger_\infty\ge\eps\Lambda^*$; the constraint binds iff the unconstrained immigrant share $1-n^\dagger_\infty$ would be below $\eps$.
+(iii) When it binds ($\mu^\dagger>\mu_{\min}$): $\mu^\dagger=\eps\Lambda^*-\kappa(1-\eps)<\eps\Lambda^*$, so the constrained model under-predicts the mean rate.
+(iv) The quadratic surrogate $\E(\lambda^*-\lambda_\theta)^2$ has the same first row of normal equations, $\E\lambda_\theta=\Lambda^*$ (\emph{known}: Rong--Nair~2026, eq.~(5.7); see Section~\ref{sec:mis-lit}); what is not known there is $n^\dagger<1$, because for the least-squares contrast $\mu$ need not be positive.
+\end{corollary}
+
+\begin{proposition}[explicit strong convexity]\label{prop:m-sc}\Pt{}
+Assume in addition $\lambda^*_t\ge\lambda_{\mathrm{lo}}>0$. With $Y=\sum_k\beta_kS_k$ and $G_M=\E[aa\T/(M+Y)^2]\succ0$,
+for every $\theta\in\Theta_\eps$ with $\mu\le M$: $\nabla^2L(\theta)\succeq\lambda_{\mathrm{lo}}G_M$, hence $L(\theta)-L(\theta^\dagger)\ge\tfrac m2\abs{\theta-\theta^\dagger}^2$ with $m=\lambda_{\mathrm{lo}}\lambda_{\min}(G_M)$. One may take $M=\Lambda^*$, since $\mu^\dagger\le\Lambda^*$ by Proposition~\ref{prop:m-rate}.
+\end{proposition}
+\begin{proof}
+On $\Theta_\eps$, $\alpha_k\le\beta_k$ so $\lambda_\theta\le M+Y$, and $\lambda^*\ge\lambda_{\mathrm{lo}}$.
+\end{proof}
+
+\begin{proposition}[consistency and sandwich]\label{prop:m-sandwich}\Pt{} (consistency), \Ps{} (CLT)
+Let $\hat L_T(\theta)=\tfrac1T(\int_0^T\lambda_\theta\dd t-\int_0^T\log\lambda_\theta\dd N)$.
+(i) $\hat L_T\to L-L_0$ pointwise a.s.\ (ergodic theorem; the initial state contributes $O(1/T)$), hence uniformly on compacts (convexity lemma), so $\arg\min_{\Theta}\hat L_T\to\theta^\dagger$ a.s.\ on $\Theta_\eps$ and on $\Theta_\infty$.
+(ii) Under a mixing assumption (geometric ergodicity of the state, with moments), $\sqrt T(\hat\theta_T-\theta^\dagger)\Rightarrow N(0,H^{-1}JH^{-1})$ with $H=\E[\lambda^*aa\T/\lambda_{\theta^\dagger}^2]$ and $J=\lim\Var(S_T)/T$, $S_T=M_T+R_T$, $M_T=\int\frac{a}{\lambda^\dagger}(\dd N-\lambda^*\dd t)$, $R_T=\int a(\lambda^*/\lambda^\dagger-1)\dd t$; $\E R_t=0$ by the first-order condition and $J=H+\Gamma_R+\Gamma_{MR}+\Gamma_{MR}\T$ (long-run covariances). Well specified: $R\equiv0$, $J=H=I$ and the covariance is $I^{-1}$; otherwise the naive $H^{-1}/T$ is wrong.
+\end{proposition}
+
+\begin{proposition}[a-priori lower bound on $\mu^\dagger$]\label{prop:m-mulow}\Pt{}
+Let $A_\eps=\{\alpha\ge0,\ c\T\alpha\le1-\eps\}$ and $\Phi(\mu)=\min_{\alpha\in A_\eps}\E[\lambda^*_t/(\mu+\alpha\T S_t)]$; $\Phi$ is continuous and strictly decreasing. With $\mu_0=\sup\{\mu\ge0:\Phi(\mu)\ge1\}$, $\mu^\dagger\ge\mu_0$ whatever $\mu_{\min}$ is.
+\end{proposition}
+\begin{proof}
+$f(\mu,\alpha)=\E[\lambda^*/(\mu+\alpha\T S)]$ is convex in $\alpha$ and strictly decreasing in $\mu$. If $\mu^\dagger<\mu_0$ then $\partial_\mu L(\theta^\dagger)=1-f(\mu^\dagger,\alpha^\dagger)\le1-\Phi(\mu^\dagger)<0$, and increasing $\mu$ keeps every constraint, so $L$ would decrease.
+\end{proof}
+The bound depends on the law of the data only, and $f(\mu,\alpha)=\tfrac1T\sum_i1/\lambda_{(\mu,\alpha)}(t_i)$ by the compensator identity.
+
+\begin{theorem}[limit law with active constraints]\label{thm:m-active}\Ps{}
+Assume $\theta^\dagger$ is a KKT point with active set $\mathcal A$, strict complementarity (all active multipliers $>0$), independent active normals $g_j$, and the CLT of Proposition~\ref{prop:m-sandwich}(ii). Let $V$ span $\mathcal N=\{d:g_j\T d=0,\ j\in\mathcal A\}$. Then
+$\sqrt T(\hat\theta_T-\theta^\dagger)\Rightarrow V(V\T HV)^{-1}V\T Z$, $Z\sim N(0,J)$, i.e.\ a Gaussian on $\mathcal N$ with covariance $V(V\T HV)^{-1}V\T JV(V\T HV)^{-1}V\T$ (rank $d-\abs{\mathcal A}$; the active constraints hold exactly in the limit; the unconstrained sandwich overstates the variance).
+\end{theorem}
+\begin{proof}[Proof (epi-convergence)]
+$h_T(d)=T[\hat L_T(\theta^\dagger+d/\sqrt T)-\hat L_T(\theta^\dagger)]=d\T\sqrt T\nabla L(\theta^\dagger)+d\T Z_T+\tfrac12d\T Hd+o_p(1)$ on the feasible set. By KKT $\nabla L(\theta^\dagger)=\sum_{j\in\mathcal A}(\text{mult}_j)g_j$ with positive multipliers, so the first term is $\ge0$, equals $0$ exactly on $\mathcal N$, and $\to+\infty$ off $\mathcal N$. Hence $h_T$ epi-converges to $d\T Z+\frac12d\T Hd$ on $\mathcal N$ and $+\infty$ elsewhere; apply the argmin theorem for convex functions (Geyer 1994).
+\end{proof}
+
+\begin{proposition}[local structure]\label{prop:m-local}\Ps{}
+For $\theta_0$ in the relative interior with residual $r_t=\lambda^*_t-\lambda_{\theta_0}(t)$: $\nabla L(\theta_0)=-\E[ar/\lambda_0]$, $H_0=\E[\lambda^*aa\T/\lambda_0^2]=I(\theta_0)+O(\norm r)$, and $\theta^\dagger-\theta_0\approx H_0^{-1}\E[ar/\lambda_0]$ (a Fisher-weighted projection of the residual). If $\lambda^*\ge\mu^*$ then $L$ is self-concordant with constant $2/\sqrt{\mu^*}$ and, when the Dikin ellipsoid lies in $\Theta$ and $\delta_0=(\nabla L\T H_0^{-1}\nabla L)^{1/2}<\sqrt{\mu^*}$: $\norm{\theta^\dagger-\theta_0}_{H_0}\le\delta_0/(1-\delta_0/\sqrt{\mu^*})$ (checked numerically below). The least-squares criterion is the unweighted version; $D(\lambda^*,\lambda)=(\lambda^*-\lambda)^2/(2\lambda)+O(\abs{\lambda^*-\lambda}^3)$.
+\end{proposition}
+
+\subsection{Convergence of the online estimator, active constraint included (Problem 17)}\label{sec:mis-online}
+
+\paragraph{Attribution.} The expected-Fisher recursion below is Spreij's approximate-maximum-likelihood recursion (Spreij 1986, 1991) applied to the Hawkes regressor $\phi=a_t$, in event-indexed form with the gap integral done exactly.
+For a well-specified model Spreij proves almost-sure consistency (1986 Thm~3.2; 1991 Thm~3, under a Lai--Wei growth condition on the eigenvalues of $Q_t^{-1}$ and a known coordinate box) and the Cram\'er--Rao asymptotic normality (1986 Thm~5.4; 1991 Thm~7).
+These results are \emph{not} claimed here; Corollary~\ref{cor:m-spreij} verifies that his hypotheses hold for a Hawkes dictionary.
+
+\paragraph{Algorithm.} Gap $i$ has length $w_i$, $a_i=\phi(w_i)$, $b_i=\int_0^{w_i}\phi$, $g_i=b_i-a_i/(a_i\T\theta_i)$. With gain constant $\kappa>0$,
+\[
+\theta_{i+1}=\Pi^{\kappa F_i}_\Theta\big(\theta_i-(\kappa F_i)^{-1}g_i\big),\qquad F_i=F_0+\sum_{j\le i}\Delta F_j,
+\]
+with the exact metric projection $\Pi$ (non-expansive in the metric, Section~\ref{sec:projection}) and either the expected increment $\Delta F_j=\int_{\text{gap }j}\phi\phi\T/\lambda_{\theta_j}$ (EF) or the observed one $\Delta F_j=a_ja_j\T/\lambda_j^2$ (OI). $\kappa=1$ is the recursion of Section~\ref{sec:regret}.
+Write $v=\theta-\theta^\dagger$, $\lambda^\dagger_t=\theta^{\dagger\top}a_t$, $I_F(\theta)=\E[aa\T/\lambda_\theta]$, $H=H(\theta^\dagger)$, $\bar I=I_F(\theta^\dagger)$ (EF) or $H$ (OI), $A=\bar I^{-1}H$.
+
+\begin{lemma}[one-gap identities]\label{lem:m-gap}\Pt{}
+If between events the true intensity $\lambda^*(u)$ is a deterministic function of the past (any multi-exponential Hawkes truth), then for $\theta_i$ measurable with respect to the past, with $\Lambda^*(u)=\int_0^u\lambda^*$,
+$\E[\ip{g_i}{v}\mid\text{past}]=\int e^{-\Lambda^*}(\lambda_\theta-\lambda^\dagger)(\lambda_\theta-\lambda^*)/\lambda_\theta\dd u$ and $\E[v\T\Delta F^{\mathrm{EF}}_iv\mid\text{past}]=\int e^{-\Lambda^*}(\lambda_\theta-\lambda^\dagger)^2/\lambda_\theta\dd u$. The two coincide when $\lambda^\dagger=\lambda^*$ (Proposition~\ref{prop:reg}).
+\end{lemma}
+
+\begin{lemma}[closed form of the drift]\label{lem:m-drift}\Pt{}
+Let $\bar\Psi_\kappa(\theta)=\kappa\E[(v\T a)^2/\lambda_\theta]-2v\T\nabla L(\theta)$ (EF), respectively $\kappa\E[\lambda^*(v\T a)^2/\lambda_\theta^2]-2v\T\nabla L(\theta)$ (OI). Then
+\[
+\bar\Psi^{\mathrm{EF}}_\kappa=-2v\T\nabla L(\theta^\dagger)-\E\Big[\frac{(v\T a)^2(2\lambda^*-\kappa\lambda^\dagger)}{\lambda^\dagger\lambda_\theta}\Big],\qquad
+\bar\Psi^{\mathrm{OI}}_\kappa=-2v\T\nabla L(\theta^\dagger)-\E\Big[\frac{\lambda^*(v\T a)^2(2\lambda_\theta-\kappa\lambda^\dagger)}{\lambda^\dagger\lambda_\theta^2}\Big].
+\]
+Since $v\T\nabla L(\theta^\dagger)\ge0$ for $\theta\in\Theta$ (first-order condition on $\Theta$), $\bar\Psi_\kappa\le0$ if $2\lambda^*\ge\kappa\lambda^\dagger$ a.s.\ (EF), respectively $2\lambda_\theta\ge\kappa\lambda^\dagger$ for all $\theta\in\Theta$ (OI). Well specified: every $\kappa\le2$. For a misspecified truth with $\sup\lambda^\dagger/\lambda^*<\infty$: every $\kappa\le2\inf\lambda^*/\lambda^\dagger$, so \emph{a convergent gain always exists}.
+\end{lemma}
+\begin{proof}
+$v\T a=\lambda_\theta-\lambda^\dagger$, so $v\T\nabla L(\theta)=\E[(\lambda_\theta-\lambda^\dagger)(\lambda_\theta-\lambda^*)/\lambda_\theta]$, and $\nabla L(\theta)-\nabla L(\theta^\dagger)=\bar Hv$ with $\bar H=\int_0^1H(\theta^\dagger+sv)\dd s=\E[\lambda^*aa\T/(\lambda^\dagger\lambda_\theta)]$, because $\int_0^1(\lambda^\dagger+s\,v\T a)^{-2}\dd s=1/(\lambda^\dagger\lambda_\theta)$.
+\end{proof}
+
+\begin{theorem}[almost-sure convergence, self-contained]\label{thm:m-as}\Pt{}
+Assume (A1) with $\lambda^*\ge\lambda_{\mathrm{lo}}>0$, $\E[(1+\abs S)^6(1+\lambda^*)]<\infty$, $\Theta\subset\{\mu\ge\mu_{\min}>0,\alpha\ge0\}$ compact convex, $\theta^\dagger=\arg\min_\Theta L$, and the drift condition $\bar\Psi_\kappa(\theta)\le0$ for all $\theta\in\Theta$. Then for any $F_0\succ0$, $\theta_1\in\Theta$, the recursion (EF or OI) satisfies $\theta_n\to\theta^\dagger$ almost surely and $\norm{\theta_{n+1}-\theta^\dagger}^2_{\kappa F_n}=o(n)$. The stability constraint may bind: the first-order condition is used only through $v\T\nabla L(\theta^\dagger)\ge0$.
+\end{theorem}
+\begin{proof}
+Put $v_n=\theta_n-\theta^\dagger$, $W_n=\norm{v_n}^2_{\kappa F_{n-1}}$.
+\emph{Step 0.} The projection is non-expansive in $\norm\cdot_{\kappa F_n}$ and $\theta^\dagger\in\Theta$, so $W_{n+1}\le W_n+\kappa v_n\T\Delta F_nv_n-2\ip{g_n}{v_n}+g_n\T(\kappa F_n)^{-1}g_n$.
+\emph{Step 1.} Let $\theta(s)=\theta_n$ during gap $n$ (predictable). With $b_n=\int_{\text{gap}}\phi$ and $a_n=\phi(t_n)$, $\sum_{n\le N}[\kappa v_n\T\Delta F_nv_n-2\ip{g_n}{v_n}]=\int_0^{t_N}[\kappa(v\T\phi)^2/\lambda_\theta-2v\T\phi]\dd s+2\int_0^{t_N}(v\T\phi/\lambda_\theta)\dd N_s=\int_0^{t_N}\Psi(Z_s,\theta(s))\dd s+2M_{t_N}$ after $\dd N=\lambda^*\dd s+\dd M$, where $\Psi=\kappa(v\T\phi)^2/\lambda_\theta-2v\T\phi(1-\lambda^*/\lambda_\theta)$ has stationary mean $\bar\Psi_\kappa(\theta)$ and $M=\int(v\T\phi/\lambda_\theta)\dd M$. (OI: $\kappa(v\T a_n)^2/\lambda_n^2=\int\kappa(v\T\phi)^2/\lambda_\theta^2\dd N$ is treated the same way.)
+\emph{Step 2.} On $\Theta$, $\lambda_\theta\le c_1\abs a_1$, so $F_n\succeq c_1^{-1}\int\phi\phi\T/\abs\phi_1$ (EF), $\succeq\sum_ja_ja_j\T/(c_1\abs{a_j}_1)^2$ (OI); by the ergodic theorem (time, resp.\ Palm) these dominate $c\,t_n$, resp.\ $c\,n$, with $c>0$ because $\E[aa\T/\abs a_1]\succ0$ (Lemma~\ref{lem:m-strict}).
+\emph{Step 3.} $\langle M\rangle_t\le C\int\abs\phi^2\lambda^*\dd s=O(t)$, so $M_t=o(t)$ by the martingale strong law.
+\emph{Step 4.} $g_n\T(\kappa F_n)^{-1}g_n\le C\abs{g_n}^2/n$ and the Palm average of $\abs{g_n}^2$ is finite, so $\sum_{n\le N}g_n\T(\kappa F_n)^{-1}g_n=O(\log N)$.
+\emph{Step 5.} Let $f=\Psi-\bar\Psi_\kappa$, Lipschitz in $\theta$ with constant $K(z)$, $\E K<\infty$; let $e_L(s)=\sup_\theta\abs{L^{-1}\int_s^{s+L}f(Z_u,\theta)\dd u}$. By the $L^1$ ergodic theorem on a finite net of $\Theta$, $\E e_L(0)\to0$ as $L\to\infty$. On dyadic blocks of the event index the iterate moves by at most $(C/2^m)\sum_{\text{window}}\abs{g_j}$ per window of length $L$; freezing $\theta$ on windows, the freezing cost and $L\,e_L$ are sums of non-negative window functionals, and an offset chosen by pigeonhole makes their total on the block at most $L^{-1}\int[Le_L+C2^{-m}(A_s^2+B_s^2)]\dd s$, $A_s=\int K$, $B_s=\sum\abs{g}$ over the window. Hence $\limsup_tt^{-1}\abs{\int_0^tf(Z_s,\theta(s))\dd s}\le\E e_L(0)\to0$.
+\emph{Step 6.} Summing Step 0 and using Steps 1--5 and $\bar\Psi_\kappa\le0$: $W_{N+1}\le W_1+o(N)$. By Step 2, $W_{N+1}\ge\kappa cN\abs{v_{N+1}}^2$, so $\abs{v_{N+1}}^2\to0$.
+\end{proof}
+No Poisson equation, mixing rate, Markov property of the truth or stochastic-approximation theorem is used; no rate is obtained. Without the drift condition, convergence is the content of Theorem~\ref{thm:m-ode}.
+
+\begin{lemma}[eigenvalue one]\label{lem:m-eigone}\Pt{}
+If $\theta^\dagger$ is interior then $H\theta^\dagger=I_F(\theta^\dagger)\theta^\dagger$ (both equal $\E a$), so $A=I_F^{-1}H$ has eigenvector $\theta^\dagger$ with eigenvalue exactly $1$ for EF.
+\end{lemma}
+\begin{proof}
+$H\theta^\dagger=\E[\lambda^*a/\lambda^\dagger]$ and $I_F\theta^\dagger=\E a$ are equal by the first-order condition $\E[a(1-\lambda^*/\lambda^\dagger)]=0$.
+\end{proof}
+
+\begin{theorem}[almost-sure convergence without a drift condition]\label{thm:m-ode}\Ps{}
+Under the assumptions of Theorem~\ref{thm:m-as} but without $\bar\Psi_\kappa\le0$, and with geometric ergodicity of the truth--dictionary state (Theorem~\ref{thm:contraction}), the EF and OI recursions converge to $\theta^\dagger_\Theta$ a.s., with or without a binding constraint.
+\emph{Route:} ODE method with Markov noise and matrix gain (Poisson equation for the state chain, projected ODE $\dot\theta=-\Pi_{T_\Theta}(\bar I^{-1}\nabla L)$ with Lyapunov function $L$, strictly convex so $\theta^\dagger$ is the unique equilibrium); the regularity of the Poisson solution is cited (Benveniste--M\'etivier--Priouret) and not re-derived.
+\end{theorem}
+
+\begin{theorem}[rate and limit law]\label{thm:m-clt}\Ps{}
+If $\theta^\dagger$ is interior and $\lambda_{\min}(A)>\tfrac12$, then $\sqrt n(\theta_n-\theta^\dagger)\Rightarrow N(0,\Sigma)$ with $(A-\tfrac12I)\Sigma+\Sigma(A-\tfrac12I)\T=\Lambda^*\bar I^{-1}J\bar I^{-1}$ and $\E\norm{\theta_n-\theta^\dagger}^2=O(1/n)$; if $\lambda_{\min}(A)<\tfrac12$ the rate is $n^{-\lambda_{\min}(A)}$. For OI, $A=I$ and $\Sigma=\Lambda^*H^{-1}JH^{-1}$ (the batch sandwich, no side condition). Well specified: $A=I$, $J=H=I_F$, $\Sigma=\Lambda^*I^{-1}$.
+With a binding constraint (strict complementarity): $d_n=1-\eps-n(\alpha_n)\ge0$ satisfies $n\,d_n=O_p(1)$ (recurrent at $0$, the projection is active a positive fraction of the steps), and $\sqrt n(\theta_n-\theta^\dagger)\Rightarrow V\zeta$, $\zeta\sim N(0,\Sigma_V)$ with $(A_V-\tfrac12I)\Sigma_V+\Sigma_V(A_V-\tfrac12I)\T=\Lambda^*(V\T\bar IV)^{-1}V\T JV(V\T\bar IV)^{-1}$, $A_V=(V\T\bar IV)^{-1}V\T HV$; for OI this is Theorem~\ref{thm:m-active} with $T=n/\Lambda^*$.
+\end{theorem}
+\emph{Sketch.} Linearise at $\theta^\dagger$: $v_{n+1}=(I-\tfrac1nA)v_n+\tfrac{\Lambda^*}n\bar I^{-1}\xi_n$ with event noise of covariance $J/\Lambda^*$ (the sum $\sum_{i\le n}g_i$ has covariance $(n/\Lambda^*)J$ and $F_n\approx n\bar I/\Lambda^*$); the standard stochastic-approximation CLT applies. The reflected-walk argument for $d_n$ is a sketch.
+
+\begin{corollary}[Spreij's conditions hold for a Hawkes dictionary]\label{cor:m-spreij}\Ps{}
+Let $N$ be a Hawkes process with distinct $\beta_k$, true $\theta_0=(\mu,\alpha)$ with every component positive, $n(\theta_0)<1$, any initial state, and a known $\eps_0$ with $\eps_0<\theta_{0i}<1/\eps_0$. Then Spreij's recursion with the box safeguard converges to $\theta_0$ a.s.
+\end{corollary}
+\begin{proof}
+$\phi=a$ is predictable and $\dd N=\theta_0\T\phi\dd t+\dd m$; $\Phi_t\ge t\to\infty$. On the box, $\phi\T\hat\theta\in[\eps_0\phi\T\1,\eps_0^{-1}\phi\T\1]$, so $\eps_0G_t\preceq Q_t^{-1}-Q_0^{-1}\preceq\eps_0^{-1}G_t$ with $G_t=\int_0^t\phi\phi\T/\phi\T\1\dd s$. The map $a\mapsto aa\T/\1\T a$ is Lipschitz (gradient $\le3$ for $\1\T a\ge1$), the state contracts in $W_d$ at rate $e^{-\eps bt}$ (Theorem~\ref{thm:contraction}), hence $G_t/t\to\bar G=\E_\pi[aa\T/\1\T a]\succ0$ a.s.\ from any initial state, and $f(x)=x^2$ gives $f(\log\lambda_{\max})/\lambda_{\min}=O((\log t)^2/t)\to0$. Apply Spreij 1991, Thm~3.
+\end{proof}
+It gives consistency at every fixed $n<1$ without the concentration machinery of Section~\ref{sec:regret}, but no rate, no regret, no $\eps$-explicit constant, and it does not cover $\eps=\eps_T\to0$.
+
+\subsection{The bias of $n(\theta^\dagger)$ versus $K$ (Problem 18)}\label{sec:mis-bias}
+
+Truth: Hawkes with $\mu^*$, kernel $\varphi^*(t)=\int e^{-\beta t}\nu(\dd\beta)$, $n^*=\int\varphi^*<1$; power law $\varphi^*(t)=(n^*\eta/\tau)(1+t/\tau)^{-(1+\eta)}$, i.e.\ $\nu(\dd\beta)=c\beta^\eta e^{-\tau\beta}\dd\beta$, $c=n^*\tau^\eta/\Gamma(\eta)$ (completely monotone, branch point at $0$). Model: $K$ exponentials with $\beta_k=\beta_1r^{k-1}$. Bias $b_K=n^*-n(\theta^\dagger_K)$.
+
+\begin{proposition}[the bias of $n$ is the excess baseline]\label{prop:m-bias}\Pt{}
+By Proposition~\ref{prop:m-rate} and $\mu^*+n^*\Lambda^*=\Lambda^*$: $\;n^*-n^\dagger=(\mu^\dagger-\mu^*)/\Lambda^*$ (when the stability constraint is slack and $\mu^\dagger>\mu_{\min}$).
+\end{proposition}
+
+\begin{proposition}[frequency-domain form (known for least squares)]\label{prop:m-freq}\Pt{}
+With $G(s)=\int\nu(\dd\beta)/(\beta+s)$, $R_\alpha(s)=\sum_k\alpha_k/(\beta_k+s)$ and the Hawkes Bartlett spectrum $\Lambda^*/\abs{1-G(i\omega)}^2$, the surrogate objective $\E(\lambda^*-\lambda_\theta)^2$ equals $\big(\mu^*-\mu+\Lambda^*(n^*-n)\big)^2+\frac1\pi\int_0^\infty\abs{G(i\omega)-R_\alpha(i\omega)}^2\Lambda^*/\abs{1-G(i\omega)}^2\dd\omega$. The first term vanishes at the optimum, so the pseudo-truth is the weighted $L^2$ pole approximant of $G$ with weight $\Lambda^*/\abs{1-G}^2$ and $b_K=G(0)-R_\alpha(0)$ is the DC error. \emph{This is known}: Rong--Nair (arXiv 2602.20795) Lemma~4(b), Lemma~13(b) and Theorem~15. It is not a contribution here; it is the computational tool for the table below.
+\end{proposition}
+
+\begin{proposition}[KL versus surrogate]\label{prop:m-klq}\Nt{}
+On the same path, $n_{\mathrm{KL}}-n_Q=-0.017,+0.001,0.000,-0.001,-0.001,-0.002$ for $K=2,\dots,7$ (grid $\beta_k=3\cdot3^{-(K-k)}$, $n^*=0.8$, error $\approx0.001$); $\norm{\theta_{\mathrm{KL}}-\theta_Q}/\norm{\theta_{\mathrm{KL}}}=0.1$--$0.3\%$ for a power-law truth with $n^*=0.8,0.95$ and $K=1$--$4$. So the advantage of the exact KL is structural, not numerical, in these examples.
+\end{proposition}
+
+\begin{definition}
+$n_{\mathrm{low}}(\beta_1)=\int_0^{\beta_1}\nu(\dd\beta)/\beta=c\beta_1^\eta/\eta=n^*(\tau\beta_1)^\eta/\Gamma(1+\eta)$, the kernel mass below the slowest pole.
+\end{definition}
+
+\begin{remark}[Conjecture]\label{conj:m-bias}\Nt{}
+For a geometric grid with ratio $r$ in a moderate range and $K$ large enough that truncation dominates the discretisation floor,
+\[
+b_K=\kappa(\eta,r)\,n_{\mathrm{low}}(\beta_1)(1+o(1)),\qquad\beta_1=\beta_{\mathrm{top}}r^{-(K-1)},
+\]
+so $b_K\propto r^{-\eta(K-1)}$ (geometric decay in $K$ at rate $\eta\ln r$), with $\kappa\in(0,1)$ nearly independent of $r$, \emph{independent of $n^*$ and of the distance to criticality}, and decreasing in $\eta$. Observed: (1) exponent $\eta$: for $\eta=\tfrac12$, $r=2$, $b=1.306\cdot10^{-2},4.158\cdot10^{-3},1.352\cdot10^{-3},4.261\cdot10^{-4}$ at $\beta_1=10^{-3},\dots,10^{-6}$ (ratio $0.32$ per decade vs $10^{-1/2}=0.316$); (2) per-step ratio $0.71,0.58,0.43$ for $r=2,3,5$ vs $r^{-1/2}=0.71,0.58,0.45$; (3) at fixed range $[10^{-3},10]$ the bias saturates at $0.0129=\kappa n_{\mathrm{low}}(10^{-3})$ with $\kappa\approx0.45$; (4) $\kappa=0.462,0.461,0.461,0.460,0.458$ for $n^*=0.3,0.5,0.8,0.9,0.95$; (5) $\kappa(\eta)\approx0.69$--$0.73,\ 0.61$--$0.66,\ 0.53$--$0.60,\ 0.40$--$0.50$ for $\eta=0.15,0.25,0.35,0.5$ (a one-pole heuristic gives the upper bound $\kappa_1(\eta)=1-2\eta\int_0^1x^\eta/(1+x)\dd x=0.82,0.73,0.66,0.57$); (6) coarse grids overshoot ($b_K<0$, $n^\dagger>n^*$) with a floor of order $\exp(-\pi^2/\ln r)$ (heuristic), the best ratio for fixed $K$ being $r\approx40,30,17,13,8,6$ for $K=2,3,4,5,6,8$ (top pole $3$). The exponent $\eta$ and $\kappa>0$ are not proved (a Wiener--Hopf-type problem for a geometric pole ladder); only the gamma mixing measure was tested.
+\end{remark}
+
+\subsection{Numerical record}\label{sec:mis-num}
+
+\begin{center}\small
+\begin{tabular}{@{}p{3.1cm}p{9.3cm}@{}}\toprule
+check & result\\\midrule
+Rate matching & $\mu^\dagger/(1-n^\dagger)=4.9967$ vs sample rate $4.9967$ ($n^*=0.8$, $K=1$--$4$); sample identity $\int\lambda_{\hat\theta}\dd t/N=1.0000000059$\\
+Uniqueness & several starting points give the same minimiser (difference $\le7\cdot10^{-14}$); Hessian eigenvalues $0.006,\dots,2170$ at $K=4$\\
+$n(\theta^\dagger)$ vs $K$ & $0.463,0.621,0.697,0.733$ ($K=1$--$4$, $n^*=0.8$); $0.868$ at $n^*=0.95$, $K=3$\\
+Binding constraint & for $1-\eps=0.6,0.5,0.3$: $\mu^\dagger=1.98582,2.47682,3.45641$ vs $\eps\Lambda^*-\kappa(1-\eps)=1.98564,2.47652,3.45585$; $\partial_\mu L\approx10^{-12}$; $-\beta_k\partial_{\alpha_k}L$ equal across $k$\\
+Strong convexity & certified $m$ is $6\%$, $2.7\%$, $1.5\%$, $1\%$ of $\lambda_{\min}(H(\theta^\dagger))$ for $K=1$--$4$ ($n^*=0.8$), $0.3\%$ at $K=3$, $n^*=0.95$\\
+Sandwich ($K=2$, $4\cdot10^4$ events, 300 reps) & $\Var(\hat\mu)$: empirical $1.26\cdot10^{-2}$, sandwich $1.05\cdot10^{-2}$, naive $H^{-1}/T$ $0.75\cdot10^{-2}$; corr$(\mu,\alpha_1)$ $-0.812$ vs $-0.809$; well-specified control: all agree\\
+A-priori $\mu^\dagger$ bound & $\Phi(0)=1.63,1.48,1.44,1.43>1$; $\mu_0\approx0.28$ vs $\mu^\dagger=1.55$ ($K=3$, $\eps=0.05$): valid, conservative $2$--$7\times$\\
+Active-constraint law ($K=2$, $n\le0.5$) & $\Var(\hat\mu)$ empirical $3.41\cdot10^{-3}$ vs formula $3.45\cdot10^{-3}$ (population $J$); corr $-0.209$ vs $-0.210$; unconstrained sandwich $5\times$ too large\\
+Online, free ($R=600$, $10^5$ events) & $n\Var(\theta_n)$: $(456,3.68,28.5)$ vs Lyapunov prediction $(481,3.47,24.6)$; $n\,\E\norm{\theta_n-\theta^\dagger}^2$ flat ($497,482,501$)\\
+Online, binding & $n\Var$: $(149,0.99,24.5)$ vs $(148,0.88,21.9)$; $n\,d_n\approx76$ stable; projection active in a stable $3.1\%$ of the steps\\
+EF vs OI & eigenvalues of $I_F^{-1}H$ in $[0.970,1.002]$ in every example (one equals $1$, Lemma~\ref{lem:m-eigone}); the two recursions are indistinguishable\\
+Drift condition (EF, $\kappa=1$) & $\max_\theta\bar\Psi/\abs v^2=-0.027,-0.016,-0.026$ ($K=1$ strong misspecification, $K=2$, $K=2$ binding); fails at $\kappa=2$; OI fails at extreme $\theta$ ($\mu\approx\mu_{\min}$, $\alpha\approx0$)\\
+Gain constants & median $\abs{\theta_n-\theta^\dagger}$ at $n=10^5$: EF $K=1$: $0.046,0.035,0.10,0.41$ for $\kappa=0.5,1,2,4$; every $\kappa$ converges, also where the drift condition fails; slope $-0.25$ for $\kappa=4$\\
+Spreij's condition (Hawkes, $K=2$) & $\lambda_{\min}(G_t)/t\to0.0146,0.0082,0.0029$ for $n=0.70,0.90,0.97$; growth ratio below $1$ after $t\approx3\cdot10^3,10^4,3\cdot10^4$\\\bottomrule
+\end{tabular}
+\end{center}
+\noindent\textbf{Failure mode.} With $\mu_{\min}=10^{-3}$ the observed-information recursion was trapped at the vertex $(\mu_{\min},0,0)$ in $1$ of $300$ runs (an early overshoot makes $a_ia_i\T/\lambda_i^2$ huge and $F_n$ locks the iterate); no trapping for expected-Fisher at any $\mu_{\min}$ or for OI with $\mu_{\min}\ge0.1$.
+
+\subsection{Position relative to the literature (checked against primary sources)}\label{sec:mis-lit}
+
+\begin{itemize}[nosep]
+\item \textbf{Spreij 1986/1991} (full text read; DOIs 10.1080/17442508608833411, 10.1016/0047-259X(91)90099-N). Counting process with intensity $\theta\T\phi_t$, $\phi$ observed predictable, well specified. The AML recursion of this section's algorithm, a.s.\ consistency and the Cram\'er--Rao CLT. No Hawkes example, misspecification, regret or near-critical analysis. \emph{Consequence:} the recursion and the well-specified special case of Theorems~\ref{thm:m-as}--\ref{thm:m-clt} are his. Ours: misspecified target, the drift matrix $A\ne I$ and the Lyapunov-equation limit law, observed-information variant, a convex constraint set that can bind, log-loss regret.
+\item \textbf{Rong and Nair}, arXiv 2602.20795 (first $\approx200$ of $213$ thousand characters read). Batch least squares on a prescribed unit-mass basis; Bartlett spectrum $\Lambda/\abs{1-\tilde\varphi_0}^2$ (Lemma~4(b)), spectral form of $R^*,R^{*(1,0)}$ (Lemma~13), pseudo-truth $\alpha^*=R^{*-1}R^{*(1,0)}$, $c^*=\Lambda(1-\Gamma^*)$ (Thm~15, eq.~(5.7)), CLT without mixing via the Hawkes-resolvent martingale representation (Thm~21; it works because the least-squares score is bilinear in the path and does not transfer to the KL score). Numerics: a sum-of-exponentials truth, $P=1,\dots,5$, non-monotone, no rate. \emph{Consequence:} Proposition~\ref{prop:m-freq} and Corollary~\ref{cor:m-binding}(iv) are known; not in their paper: the KL pseudo-truth, $\Gamma^*<1$, the binding criterion, online estimation, a bias law for a power-law truth.
+\item \textbf{Wei, Zhu, Zhang and Xie}, AISTATS 2021 (arXiv 2006.09439; about three quarters read). QMLE for a piecewise-constant triggering function, KL pseudo-truth identified by concavity, a.s.\ convergence and sandwich covariance (modifications of Ogata 1978), only equality constraints. \emph{Consequence:} the generic content of Theorem~\ref{thm:m-exist} and Proposition~\ref{prop:m-sandwich} is anticipated in batch form; not the exponential dictionary with a stability set, rate matching, binding criterion, active-constraint limit law, online estimator.
+\item \textbf{Piggott and Solo}, ICASSP 2018 (DOI 10.1109/ICASSP.2018.8462138); \textbf{Pasha and Solo}, CDC 2019 (DOI 10.1109/CDC40024.2019.9029642) (both read in full). Linear Hawkes on a Laguerre basis with one decay constant, fixed-gain exponentially weighted least squares by a multiplicative non-negative update, simulations, no theorem, stability not enforced; and a log-linear model with likelihood steepest ascent, a heuristic averaging analysis (well specified; positive definiteness of $\E[\phi\phi\T\lambda]$ and a hovering theorem left open). No regret, tracking bound, misspecification or stability-constrained linear model.
+\item \textbf{Herrera-Mar\'in} (arXiv 2609.38268, 2609.38267; unrefereed). Kernel-agnostic two-point bound and half-open dichotomy (I); a numerical ``flat direction'' for the quadratic criterion with $K\gtrsim5$ exponentials (II, Section~5 only read). The flat direction is quantified here by Proposition~\ref{prop:m-sc}.
+\item \textbf{Searches for the items listed as unverified} (full record in \texttt{literature\_unverified\_items.md}): no Zhang~2023 online estimator located; Wang et al.\ 2023 is an online change-point detector, not an estimator; no online EM for Hawkes found (Zhou--Zha--Song is batch); Cartea--Cohen--Labyad is batch least squares; the Hall--Willett and Yang et al.\ citation trees (64 and 26 entries) were screened by title only. Lima (arXiv 2105.03800) stabilises parametric MLE with an $\eps$-margin (abstract only): the device $n\le1-\eps$ is not new, the analysis is.
+\end{itemize}
+
+\subsection{Additions to the status matrix and errata for this section}\label{sec:mis-status}
+
+\begin{center}\small
+\begin{tabular}{@{}p{6.1cm}p{1.3cm}p{6.1cm}@{}}\toprule
+result & tag & main caveat\\\midrule
+Existence, uniqueness, KKT of the exact KL pseudo-truth (Thm.~\ref{thm:m-exist}) & \Pt{} & generic form known (Wei et al.)\\
+Rate matching for KL, $n^\dagger<1$, binding criterion (Prop.~\ref{prop:m-rate}, Cor.~\ref{cor:m-binding}) & \Pt{} & surrogate version known (Rong--Nair)\\
+Explicit strong-convexity constant; a-priori $\mu^\dagger$ bound & \Pt{} & conservative ($2$--$300\times$)\\
+Consistency of the batch QMLE; sandwich CLT & \Pt{}/\Ps{} & CLT needs mixing\\
+Active-constraint limit law (batch) & \Ps{} & strict complementarity; CLT\\
+Online convergence, self-contained (Thm.~\ref{thm:m-as}) & \Pt{} & drift condition on $\Theta$ (checked on samples), no rate\\
+Online convergence without drift condition (Thm.~\ref{thm:m-ode}) & \Ps{} & Poisson-equation regularity cited\\
+Online limit laws, binding face (Thm.~\ref{thm:m-clt}) & \Ps{} & reflected-walk bound is a sketch\\
+Spreij's hypotheses for Hawkes (Cor.~\ref{cor:m-spreij}) & \Ps{} & rests on Spreij's Thm~3; no rate\\
+Bias of $n$ equals excess baseline (Prop.~\ref{prop:m-bias}) & \Pt{} & slack constraint\\
+Bias law in $K$ for a power-law truth (Conj.~\ref{conj:m-bias}) & \Nt{} & exponent and $\kappa>0$ unproved; gamma mixing only\\
+Regret against $\theta^\dagger$ ($\tfrac12\tr(H^{-1}J)\ln n$) & \Ot{} & conjecture, untested\\\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[nosep]
+\item \textbf{Novelty corrections.} (a) The Fisher-preconditioned recursion of Sections~\ref{sec:regret} and \ref{sec:mis-online} is Spreij's AML recursion applied to Hawkes. (b) Proposition~\ref{prop:m-freq} and the surrogate rate matching were first written here as new and are in Rong--Nair 2026. (c) The generic KL pseudo-truth statements are in Wei et al.\ 2021 for a different model class.
+\item \textbf{A failed expectation.} I expected the KL pseudo-truth to differ noticeably from the quadratic surrogate near criticality (weight $1/\lambda$); the difference is $0.1$--$0.3\%$ in $\theta$ for the examples run.
+\item \textbf{A superseded bound.} A first version of the $J$ estimate used $200$ paths of $4\cdot10^4$ events and was biased low by long memory (predictions $15$--$25\%$ off); redone with $600$ paths of $10^5$ events. A first run for Spreij's condition used a supercritical parameter ($n=1.27$) and is not reported.
+\item \textbf{Unproved here.} CLT under mixing for the KL score; strict-complementarity-free limit; the drift condition for all of $\Theta$ in any example; observed-information recursion without a ratio-restricted $\Theta$; regret against $\theta^\dagger$; $K>2$ for the online results; the exponent and $\kappa$ of Conjecture~\ref{conj:m-bias}.
+\end{enumerate}
