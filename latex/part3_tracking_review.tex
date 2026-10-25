@@ -1,0 +1,183 @@
+%==============================================================
+\section{Tracking a drifting baseline (constant-gain estimators)}\label{sec:tracking}
+%==============================================================
+
+This section summarises the drift-model study (``Problem~14''). Unlike Sections~\ref{sec:curvature}--\ref{sec:tv} there is no theorem about the
+estimator here: the three deterministic formulas below are proved for a \emph{linear filter}, and their relevance to the point-process
+estimators is \Nt{}.
+
+\subsection{The model class and the target form}
+
+\begin{definition}[piecewise-Lipschitz class $\mathcal P(\Delta,J,D;c_\mu,c_\eps)$]\label{def:drift}
+The true path $\theta^*_t$, $t\in[0,T]$, satisfies (box) $\mu_t\in[\mu,c_\mu\mu]$, $\eps_t=1-n_t\in[\eps,c_\eps\eps]$; (variation) $\theta^*_t$ is Lipschitz with $\norm{\dot\theta^*_t}\le\Delta$ between at most $J$ jump times, each jump of size at most $D$. Path length $V_T\le\Delta T+JD$. Drift is measured in a fixed reference Fisher norm $\norm\cdot_{I(\theta_{\mathrm{ref}})}$.
+\end{definition}
+Rationale: smooth-only drift cannot represent regime changes and misleads step-size tuning (jump bias $\propto1/\eta$, smooth bias $\propto1/\eta^2$); piecewise-constant only excludes smooth seasonality and needs every epoch longer than the relaxation time $1/(\eta r)$; a bare bounded-variation budget cannot separate the exponents.
+The target is the average tracking MSE of a constant-gain estimator with gain $\eta$ (per event):
+\[
+\underbrace{\eta\,\sigma^2(\eps)}_{\text{noise}}\ +\ \underbrace{\Delta^2/\eta^2}_{\text{lag}}\ +\ \underbrace{J D^2/(\eta T)}_{\text{jumps (event units, up to a factor }1/2)} .
+\]
+
+\begin{proposition}[metric equivalence along the path]\label{prop:metric}\Nt{}
+Let $\kappa_I=\max_{\theta,\theta'\in\text{box}}\lambda_{\max}(I(\theta')^{-1/2}I(\theta)I(\theta')^{-1/2})$. For $K=1$ (exact $I$) with $\mu$ and $\eps$ each varying by $\times1.5$: $\kappa_I=19.5,22.5,25.6$ at $\eps_0=0.2,0.1,0.05$, essentially independent of $\eps_0$, whereas $\mathrm{cond}\,I\sim\eps^{-2}$ ($48,152,522$). For $K=2$ ($\beta=(1,2)$, Monte Carlo) $\kappa_I\approx27$--$30$. Converting drift to a fixed reference norm costs $\kappa_I^{1/2}\approx2$--$5$, not $\eps^{-2}$, for a $\times1.5$ box; it grows fast with the box ($\times2$ in both: $150$--$220$).
+\end{proposition}
+
+\subsection{The three terms for a linear filter}
+
+Let the error obey $e_{t+1}=(1-\eta)e_t+\eta\xi_t-d_t$ with $\xi_t$ martingale-difference noise and $d_t=\theta^*_{t+1}-\theta^*_t$ (Fisher-preconditioned coordinates).
+
+\begin{proposition}[noise]\label{prop:noise}\Pt{}
+If $\Var\xi_t=\sigma_\xi^2$ then $\Var e=\eta\sigma_\xi^2/(2-\eta)\approx\eta\sigma_\xi^2/2$.
+\end{proposition}
+
+\begin{proposition}[sinusoidal drift]\label{prop:sin}\Pt{}
+For the continuous filter $\dot y=\kappa(u-y)$ and $u=u_0+A\sin\omega t$, the steady error has amplitude $A\omega/\sqrt{\kappa^2+\omega^2}$ and mean square $\frac{A^2}2\frac{\omega^2}{\kappa^2+\omega^2}$; it is $\approx\Delta^2/\eta^2$ ($\Delta=A\omega$) when $\kappa\gg\omega$.
+\end{proposition}
+
+\begin{proposition}[alternating jumps]\label{prop:tanh}\Pt{}
+Let $u$ alternate between two levels differing by $D$, switching every $L$ time units, and $\dot y=\kappa(u-y)$. The time-averaged squared error in steady state is
+\[
+\overline{e^2}=\frac{D^2\tanh(\kappa L/2)}{2\kappa L}\ \xrightarrow{\ \kappa L\gg1\ }\ \frac{D^2}{2\kappa L}=\frac{\rho D^2}{2\kappa},\ \ \rho=1/L;\qquad\xrightarrow{\ \kappa L\ll1\ }\frac{D^2}4 .
+\]
+\end{proposition}
+\begin{proof}
+At a switch the error jumps by $D$; periodicity and symmetry give the post-switch magnitude $e_0=D-e_0e^{-\kappa L}$, i.e.\ $e_0=D/(1+e^{-\kappa L})$. On a period $e(t)=e_0e^{-\kappa t}$, so $\frac1L\int_0^Le^2=e_0^2(1-e^{-2\kappa L})/(2\kappa L)=D^2\frac{1-e^{-\kappa L}}{1+e^{-\kappa L}}\frac1{2\kappa L}$.
+\end{proof}
+(Independently re-derived in this review; it agrees with the formula in the source note.)
+
+\begin{proposition}[path-length bound]\label{prop:pathlen}\Pt{}
+$e_t=-\sum_{s\ge0}(1-\eta)^sd_{t-s}$, so by Young's inequality $\frac1T\sum e_t^2\le\eta^{-2}\frac1T\sum d_t^2\le\Delta_{\max}V_T/(\eta^2T)$. Also $\sum e_t^2\le\norm e_\infty\norm e_1\le V_T\cdot V_T/\eta$, i.e.\ $\frac1T\sum e_t^2\le V_T^2/(\eta T)$.
+\end{proposition}
+\begin{remark}
+The source note states the second bound with an extra factor $\frac12$ ($V_T^2/(2\eta T)$). The argument above only gives $V_T^2/(\eta T)$; the sharper constant is not derived in the note. Flagged in Section~\ref{sec:review}.
+\end{remark}
+
+\paragraph{Time-varying gain.} A per-event gain $\eta$ is a per-unit-time gain $\kappa_t=\eta\,r_t$ with $r_t=\mu_t/\eps_t$ the local event rate. The correct deterministic baseline is $\dot y=\eta r_t(\mu_t-y)$, not the constant-gain filter; it reproduces triangle-wave and ramp results to within $5\%$ (Table~\ref{tab:track}). The ``lag'' term $\Delta^2/\eta^2$ is the response of this filter and equals $\Delta^2/\eta^2$ only for slow drift and small relative amplitude.
+
+\subsection{Evidence (all \Nt{}; causal sampling, $\hat\mu$ read at the last event at or before each grid time)}
+
+Two constant-gain estimators were used: ``naive'' ($\hat\mu\mathrel{+}=\eta(r/m)(1/\hat\lambda-w)$) and ``forgetting Newton'' ($F\leftarrow(1-\eta)F+\Delta F_i$, $\hat\theta\mathrel{-}=F^{-1}g_i$, the constant-gain version of Section~\ref{sec:regret}); Problem~5's estimator verbatim ($\eta=0$) does \emph{not} track (the gain decays like $1/n$; bias$^2\approx0.19$--$0.20$ in four successive windows) and needs forgetting.
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{@{}p{4.2cm}p{9.6cm}@{}}\toprule
+quantity & finding\\\midrule
+noise coefficient, $K=1$, $\alpha$ known & $\mathrm{MSE}\approx a\eta$, $a=\mu/(2\eps m)$ with exact $m$; measured/predicted $=1.09$--$1.18$ across $k=0.6$ to $8$; $a\eps^2/\mu^2=0.27$ ($k=0.6$) to $0.52$ ($k\ge4$); $k=2$: $0.44$\\
+noise, $\alpha$ unknown & $a=r/(2\,\eff)$, $\eff=(m-\eps/\mu)/(1-2\eps+\eps\mu m)$ (checked against the Fisher formulas of Section~\ref{sec:fisherK1}); $\eps=0.2$: $22.2$ predicted vs $17.6$--$21.8$ measured; $K=2$: $23.2\eta$ vs $23.7\eta$; $K=3$ $(1,3,9)$: $18.7\eta$ vs $19.5\eta$\\
+exact rescaling & $t\to t/c$, $\mu\to c\mu$, $\beta\to c\beta$ leaves the per-event recursion unchanged; only $k=2\mu/\beta$ matters\\
+linear window & the filter formula holds while $a\eta/\mu^2\lesssim\theta_k$, $\theta_k\approx0.013$ ($k=2$), $0.015$ ($k=4$), $0.03$ ($k=0.6$); i.e.\ $\omega\lesssim\eta\lesssim\eta_{\max}=\theta_k\mu^2/a=2\theta_k\eps m\mu$; non-empty iff the drift is slow enough\\
+transfer function ($K=1$, $\eps=0.4$, $A=0.3$, $P=1200$) & $\eta=0.004$: $H=0.768-0.428i$ ($\alpha$ known), $0.799-0.411i$ (fixed preconditioner), $0.814-0.518i$ (adaptive) vs filter $0.785-0.411i$; within $1$--$2$ s.e.\ except adaptive at $\eta=0.004$ (modulus $+9\%$)\\
+decomposition of the error at $\eta=0.004$ & fundamental error$^2$/filter: fixed preconditioner $1.07,0.98,0.92$; adaptive $1.41,1.48,1.61$ for $A=0.2,0.35,0.5$; adaptive/fixed $=1.32,1.48,1.75$: an \emph{amplitude-dependent} excess of the data-driven preconditioner (absent for a fixed one, $\to1$ as $A\to0$); not derived analytically\\
+$K\ge2$ ($\eps=0.4$, causal) & within the window the noise coefficient holds to $3$--$13\%$ and $H$ follows the filter to $2\%$ ($K=3$, $(1,3,9)$), $6\%$ ($K=2$, $(1,2)$), $21\%$ ($K=3$, $(1,2,4)$); not monotone in $\mathrm{cond}\,I$ ($755$ vs $1790$); outside the window ($a\eta/\mu^2\approx0.04$) modulus overshoots and noise rises $30$--$40\%$\\
+other shapes ($K=1$) & ramp: lag $=(\text{slope}/r_{\mathrm{local}})/\eta$ within $15\%$; triangle wave: $0.0154,0.0066$ measured vs corner-aware filter $0.0161,0.0068$ (steady-state formula off by $2.3\times$); random walk: measured MSE $20$--$40\%$ above $a\eta+(q/r)/(2\eta)$\\
+jump class & ratio measured/(time-varying filter): $1.00$--$1.10$ ($\alpha$ known), $1.02$--$1.43$ ($\alpha$ unknown) inside the window; $2.6$--$9$ where the window rule says $\eta$ is too large\\\bottomrule
+\end{tabular}
+\caption{Summary of the tracking experiments (source: the drift-model note, sections F1--F4 and R0--R7).}\label{tab:track}
+\end{table}
+
+\paragraph{Corrections already made in the source note.} (i) The first versions of the mechanism and $K=2$ scripts read $\hat\mu$ at the first event \emph{after} each grid time, which peeks ahead; the $K=2$ bias ratios $1.64,1.87$ are superseded. (ii) The claim $c_{\mathrm{lag}}\approx1.8$ is retracted (the mean-square ratio varied between $1.2$ and $1.9$ across seed sets for the same settings). (iii) Hall--Willett (arXiv 1409.0031, full text) assume no drift model: their regret depends on $\sum\norm{\lambda_{t+1}-\Phi_t(\lambda_t)}^2$ with a $1/\sqrt t$ step in the rate vectors, a different object from a parameter MSE.
+
+\paragraph{Open.} $K\ge4$; $\eps<0.4$ for $K\ge2$ (needs $\eta\lesssim10^{-3}$, runs of $10^5$ time units); an analytic derivation of the amplitude effect; the full text of Piggott--Solo (ICASSP 2018, closed access) to check (1) whether a tracking bound is stated, (2) its parameter-variation model, (3) the forgetting factor, (4) the two-time-scale non-negativity mechanism versus projection, (5) the Laguerre basis versus the exponential dictionary.
+
+%==============================================================
+\section{Review of the whole programme}\label{sec:review}
+%==============================================================
+
+\subsection{Concordance of labels}
+
+\begin{center}\small
+\begin{tabular}{@{}p{5.6cm}p{7.5cm}@{}}\toprule
+source-note label & this document\\\midrule
+Problem~1 Lemmas 1,2,3 & Lemmas~\ref{lem:rankone},\ref{lem:expcurv},\ref{lem:lammin}\\
+Problem~3 key identity, Lemma 1/1$'$, Lemma 4 & Prop.~\ref{prop:keyid}, Lemma~\ref{lem:moments}, Lemma~\ref{lem:expmoment}\\
+Problem~3 Theorem 2, Prop.\ 3, Lemmas A,C & Thm.~\ref{thm:contraction}, Prop.~\ref{prop:gamma}, Lemma~\ref{lem:ellcontr}\\
+Problem~10 Theorem A (and repaired Step 2) & Thm.~\ref{thm:A}, Lemma~\ref{lem:gammafact}\\
+Problem~11 Theorem B & Thm.~\ref{thm:B}\\
+Problem~11 Prop.\ 3; Lemma G, H; Theorems E, F; Cor.\ D/E$'$ & Prop.~\ref{prop:ridge}; Lemmas~\ref{lem:G},\ref{lem:H}; Thms.~\ref{thm:E},\ref{thm:F}; Cor.~\ref{cor:Eprime}\\
+Problem~11 ``Theorem C'' (Lyapunov, region $2\mu>n^2B$) & superseded by Thm.~\ref{thm:E}; not reproduced\\
+Problem~2 ``Theorem T'' (truncation) & Thm.~\ref{thm:trunc}\\
+Problem~12 & Prop.~\ref{prop:tiers}\\
+Problem~4 & Props.~\ref{prop:projdiag},\ref{prop:projbox}\\
+Problem~5 Prop.\ 1, ``Theorem B'' (box) & Props.~\ref{prop:reg},\ref{prop:ratio}\\
+Problem~7 Lemmas 7a--c, Theorem 7 & Lemmas~\ref{lem:score},\ref{lem:drift},\ref{lem:logdet}; Thm.~\ref{thm:cond}\\
+Fisher concentration Lemmas F1,F2, ``Theorem F'' & Lemmas~\ref{lem:F1},\ref{lem:F2}; Thm.~\ref{thm:Fconc}\\
+Exponential tails E1--E4; E5; ``Theorem C-exp'' & Lemmas~\ref{lem:E1},\ref{lem:E2},\ref{lem:E4}, Thm.~\ref{thm:E3}, Lemmas~\ref{lem:E5a}--\ref{lem:E5d}, Prop.~\ref{prop:E5}; Thm.~\ref{thm:Cexp}\\
+Bootstrap ``Theorem C'' (polynomial tails) & superseded by Thm.~\ref{thm:Cexp}\\
+Expected regret ``Theorem R'' & Thm.~\ref{thm:R}\\
+Stationary-TV ``Theorem T'', ``Lemma F'' & Thm.~\ref{thm:Tprime}, Lemma~\ref{lem:LemmaF}\\
+General-$K$ ``Theorem V'', ``Lemma S'' & Thm.~\ref{thm:V}, Lemma~\ref{lem:S}\\\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Errata found and corrected during the programme}
+
+\begin{enumerate}[nosep]
+\item \textbf{Thinning bug.} Several Monte Carlo scripts discarded rejected proposals instead of accumulating waiting time; affected the first versions of the Problem~2 tables, the Problem~3 exponential-tail check, the Problem~4 $K\ge2$ conditioning table and the first transient check in Problem~10. All were fixed and the affected numbers regenerated; the proved statements were not affected.
+\item \textbf{Problem~2 erratum.} ``$\lambda_{\min}(I)$ does not shrink with $\eps$ for $K\ge2$'' was a range artefact ($\eps\ge0.05$ measures the middle tier). For $\eps\to0$, $\lambda_{\min}\propto\eps$ for every $K$.
+\item \textbf{Diagonal clip.} The diagonal-metric projection is not non-expansive in the $F$-norm and inflates regret $\approx10\times$ at tight boxes; for $K=1$ the exact $F$-projection (Prop.~\ref{prop:projbox}) must be used.
+\item \textbf{Theorem~A, Step 2.} Two inadequate justifications (the $x\ge1.5$ bound needs convexity of $h$; the denominator bound needs the exact factor $r\le\frac13$) were repaired (Lemma~\ref{lem:gammafact}).
+\item \textbf{Initial-state gap in Corollary~E$'$.} The KL lemma compares laws with the same initial state; the stationary-record experiment has $S_0\sim\pi_\theta$ vs $\pi_{\theta'}$. Closed for $K=1$ via $\TV(\pi_\theta,\pi_{\theta'})$ (Thm.~\ref{thm:Tprime}); bypassed for all $K$ via ghost immigrants (Thm.~\ref{thm:V}).
+\item \textbf{Theorem~7 / Lemma~7c.} The assumption ``gap leverage $x_i\le\bar x$ almost surely'' cannot hold ($\tr F^{-1}\Delta F\propto E_i\sim\mathrm{Exp}(1)$); replaced by the truncated Lemma~\ref{lem:logdet}.
+\item \textbf{$|d(y)|$ constant.} The earlier bound $31.5/\alpha$ used $|N|\le2.5x^2$ without proof; replaced by $19/\alpha$ with a complete argument ($\mathrm{Re}\,N\in[-y^2/2,0]$); true supremum $1.1429/\alpha$.
+\item \textbf{Drift study.} Peek-ahead sampling in two scripts and the retracted $c_{\mathrm{lag}}\approx1.8$ (Section~\ref{sec:tracking}).
+\item \textbf{Test-script error (not a mathematical one).} A pointwise check of $|\Delta'|\le M_1\eps(k(e-1)+e)|G|$ initially failed because the code compared an $x$-derivative with a $t$-bound; corrected, the inequality holds.
+\end{enumerate}
+
+\subsection{Inconsistencies between the notes that remain}
+
+\begin{enumerate}[nosep]
+\item \textbf{Label clashes} (three ``Theorem B'', three ``Theorem C'', two ``Theorem T'', two ``Lemma F'', ``Lemma 3'' in two senses). Resolved here; should be resolved in the notes before any paper is written.
+\item \textbf{Drift note, stale paragraphs.} Section F2 still contains ``empirically the lag term should carry a constant $c_{\mathrm{lag}}\approx1.8\pm0.2$'' and the statement that the excess is ``independent of $\eps$, $\eta$ and of the amplitude''; both are contradicted by section R1 (amplitude-dependent, $1.3$--$1.75$) and R0 (retracted). The table of ``caveats resolved'' still says the $K=2$ bias excess ``agrees with $K=1$''. These sentences should be struck.
+\item \textbf{Noise convention.} The header defines $\sigma^2(\eps)=r/(2\eff)$ and writes the noise term as $\eta\sigma^2$; the derivation section writes the stationary variance as $\eta\sigma^2/2$. With Prop.~\ref{prop:noise} these agree only if $\sigma_\xi^2=r/\eff$ in the derivation and $\sigma^2=a=r/(2\eff)$ in the header. One convention should be used.
+\item \textbf{Path-length bound.} $V_T^2/(2\eta T)$ vs the derivable $V_T^2/(\eta T)$ (Prop.~\ref{prop:pathlen}).
+\item \textbf{Jump term units.} ``$JD^2/(\eta T)$'' is correct only in event units and only up to the factor $\frac12$ of Prop.~\ref{prop:tanh} ($\rho D^2/(2\eta r)$ in time units).
+\item \textbf{Which regime has been proved vs tested.} Assumption~\ref{ass:M} and Theorem~\ref{thm:Tprime} are certified for $k_0=2$ only for $\eps\le10^{-4}$, whereas all regret experiments were run at $\eps\in[0.03,0.3]$. The theorem and the experiments do not overlap in $\eps$; the experiments support the rate, the proof supports the constant $d/2$ only in the far regime.
+\item \textbf{Observation model.} The impossibility (``$\mu$ is not consistently estimable when $k_K>1$'') is a statement about the stationary or conditional experiment. For the empty-start record the baseline information diverges at least like $\ln T$ for every $k$ (Prop.~\ref{prop:cold}); the streaming algorithms of Section~\ref{sec:regret} act in the latter setting. The project decision (C4 uses stationary observation) must be stated explicitly in any paper.
+\item \textbf{Target form of the regret.} The original target $(d/2)\log T+C\log(1/\eps)+\text{burn-in}$ is not contradicted. Empirically $\E R_n-\log T_n$ is flat in $\eps$ in time units and $\approx-(d/2)\log(1/\eps)$ in events; Theorem~\ref{thm:R} gives an additive constant $O(\eps^{-2}\ln(1/\eps))$, a proof artefact, not a lower bound.
+\item \textbf{Status of the earlier K1 summary.} The statement ``stationary-record impossibility, $K=1$: proved'' should read ``proved modulo Theorem~\ref{thm:Tprime}, whose constant chain is hand-derived but evaluated by floating-point quadrature, and informative only for $\eps\lesssim10^{-4}$''.
+\end{enumerate}
+
+\subsection{Status matrix}
+
+\begin{center}\small
+\begin{tabular}{@{}p{6.1cm}p{1.3cm}p{6.1cm}@{}}\toprule
+result & tag & main caveat\\\midrule
+Rank-one Hessian; expected curvature; $\lambda_{\min}$ bound & \Pt{} & stationarity assumed\\
+Moments, exponential tail, contraction, exact rate $\gamma$ & \Pt{} & constants carry $\beta_{\max}/\beta_{\min}$\\
+$K=1$ Fisher formulas; Theorem~\ref{thm:A} (all three regimes) & \Pt{} & $\eps\to0$ at fixed $\mu,\beta$\\
+Cold-start lower bound $\ln T$ & \Pt{} & coefficients conjectural\\
+Impossibility given $S_0$, any $K$, $k_K>1$ & \Pt{} & $\eps$ small, constants not explicit\\
+Divergence for $k_K<1$ (lower bound) & \Pt{} & no matching upper bound / estimator\\
+Efficient information for $K\ge2$, $k_K<1$; $k_K=1$ & \Ot{} & numerics only\\
+Spectrum: three tiers & \Pt{}/\Nt{} & ridge and top bounds proved; middle tier heuristic\\
+$\lambda_{\min}(I)$ truncation bound & \Ps{} & Lemma~\ref{lem:moments} constants; $20$--$400\times$ loose\\
+Regret reduction (Prop.~\ref{prop:reg}), box, projection ($K=1$) & \Pt{} & a-priori box\\
+Conditional regret theorem (corrected) & \Ps{} & leverage assumptions\\
+Information concentration, exponential tails & \Ps{} & Assumption~\ref{ass:M}; rate constants $10^5$ off\\
+E5 exponential tail for $G_n$ & \Pt{} & given leverage conditions\\
+Bootstrap with exponential tails & \Ps{} & as above\\
+Expected regret $(\tfrac12+o(1))d\ln T+C$ & \Ps{} & $K=1$, $k_0>1$, box, $\eps\le10^{-4}$ for the certified Assumption M\\
+Stationary TV bound with explicit constants & \Ps{} & quadrature not interval arithmetic; $\eps\lesssim10^{-4}$\\
+Impossibility, stationary record, $K=1$ & \Ps{} & as above\\
+Impossibility, stationary record, any $K$ (Thm.~\ref{thm:V}) & \Ps{} & cluster-representation proof not written; $\ln(1/\delta)$ factor\\
+Tracking formulas for the linear filter & \Pt{} & relevance to the estimators is \Nt{}\\
+Tracking: window rule, noise coefficient, transfer function & \Nt{} & $K\le3$, $\eps\ge0.2$\\
+$K\ge2$ regret (projection, Assumption M, Theorem F, bootstrap) & \Ot{} & --\\
+Regret lower bound for any algorithm, explicit $\eps$ & \Ot{} & none found in the literature either\\\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Position relative to the literature}
+The $K=1$ information structure (bounded / logarithmic / divergent) is the Hawkes prelimit of classical CIR theory: the exact Fisher matrix converges to the CIR matrix of Ben Alaya--Kebaier--Tran (Thm.~2.1) as $\eps\to0$ (relative difference $\approx\eps$) and the critical coefficient $2/(\beta(2\mu-\beta))$ equals their critical-case information rate; the CIR literature treats fixed sub/critical/supercritical regimes, and no local-to-critical result was found. Herrera-Mar\'in (two papers) give a two-point KL bound, the Fisher matrix and a Feller-type remark for the near-critical Hawkes likelihood. Discrete analogues in the literature are conditional/ordinary least squares (nearly critical branching with immigration; Anne--Lu--Yu--Zhou 2026 for local-to-unity affine processes), with no likelihood information bound. No Hawkes-specific regret lower bound was found. The novelty of the programme therefore rests on the online regret result (Theorem~\ref{thm:R}), the streaming impossibility statements (Theorems~\ref{thm:imp1}, \ref{thm:V}) and the tracking study, not on the Fisher dichotomy by itself. Every literature claim above was read at abstract or partial full-text level only.
+
+\subsection{Open problems, in order of value}
+\begin{enumerate}[nosep]
+\item Remove the a-priori box and certify Assumption~\ref{ass:M} for moderate $\eps$ (or give a proof of the regret theorem that does not need it).
+\item $K\ge2$ for the whole regret chain: QP projection, Gamma-type comparator for the joint law (or an alternative anti-concentration), three-tier preconditioning.
+\item A regret lower bound for arbitrary algorithms with explicit $\eps$-dependence.
+\item Interval-arithmetic evaluation of $\Phi$, and an analytic Hessian bound for the two-Gamma KL.
+\item A matching upper bound for $k<1$ (LAMN-type structure).
+\item Analytic derivation of the amplitude effect in tracking; $K\ge4$; $\eps<0.4$ at $K\ge2$; the Piggott--Solo full text.
+\end{enumerate}
+
+\subsection{Note on compilation}
+No \LaTeX{} engine was available where this file was produced; it was checked for balanced environments and braces with a script, not compiled. If compilation reports an undefined reference, the label is in the corresponding part file (\texttt{part1\_model\_fisher.tex}, \texttt{part2\_regret.tex}, \texttt{part3\_tracking\_review.tex}).

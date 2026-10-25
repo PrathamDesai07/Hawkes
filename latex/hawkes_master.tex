@@ -1,0 +1,81 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{booktabs,array,enumitem}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+\usepackage{xcolor}
+
+% ---------- theorem environments (one shared counter, numbered inside sections) ----------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ---------- status tags ----------
+% [P]   proved on paper (hand derivation, every step written)
+% [P*]  proved on paper modulo inputs that are listed in the statement or in the proof
+% [N]   numerical evidence only
+% [O]   open
+\newcommand{\st}[1]{\textsf{\small[#1]}}
+\newcommand{\Pt}{\st{P}}
+\newcommand{\Ps}{\st{P$^*$}}
+\newcommand{\Nt}{\st{N}}
+\newcommand{\Ot}{\st{O}}
+
+% ---------- notation ----------
+\newcommand{\E}{\mathbb{E}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\1}{\mathbf 1}
+\newcommand{\T}{^{\top}}
+\newcommand{\cA}{\mathcal A}
+\newcommand{\cL}{\mathcal L}
+\newcommand{\cF}{\mathcal F}
+\newcommand{\cG}{\mathcal G}
+\newcommand{\TV}{\mathrm{TV}}
+\newcommand{\KL}{\mathrm{KL}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\logdet}{\log\det}
+\newcommand{\eff}{\mathrm{eff}}
+\newcommand{\dd}{\,\mathrm d}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+\newcommand{\ip}[2]{\langle #1,#2\rangle}
+
+\title{Online estimation of near-critical Hawkes processes with an exponential dictionary:\\
+lemmas, proofs, status and review}
+\author{Working document compiled from the research notes of 25 October 2026}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document collects, in one place and in one notation, every lemma, proposition and theorem
+that was derived in the research notes on streaming estimation of the linear Hawkes process
+$\lambda_t=\mu+\sum_{k}\alpha_kS_k(t)$ with exponential kernels in the near-critical regime
+$n=\sum_k\alpha_k/\beta_k=1-\eps$, $\eps\to0$.
+Each result carries a status tag: \Pt{} proved on paper, \Ps{} proved on paper modulo listed inputs,
+\Nt{} numerical only, \Ot{} open.
+Nothing here has been refereed; the proofs were written by hand in single passes and checked numerically.
+Section~\ref{sec:review} is a review of the whole programme: concordance of labels, errata found,
+inconsistencies between notes, and the precise list of what remains unproved.
+No \LaTeX{} compiler was available in the environment in which this file was written, so the file
+has been checked for balanced environments and braces only (see the note at the end of Section~\ref{sec:review}).
+\end{abstract}
+
+\tableofcontents
+
+\input{part1_model_fisher}
+\input{part2_regret}
+\input{part3_tracking_review}
+
+\end{document}

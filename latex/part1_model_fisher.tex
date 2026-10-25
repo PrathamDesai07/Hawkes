@@ -1,0 +1,328 @@
+%==============================================================
+\section{Model, conventions and status legend}\label{sec:model}
+%==============================================================
+
+\paragraph{Model.}
+Let $N$ be a point process on $[0,\infty)$ with intensity
+\[
+\lambda_t=\mu+\sum_{k=1}^K\alpha_kS_k(t-),\qquad
+\dd S_k=-\beta_kS_k\dd t+\dd N_t,\qquad S_k(0)=s_k\ge0,
+\]
+with $\mu>0$, $0<\beta_1<\dots<\beta_K$ fixed and known, $\alpha_k\ge0$ unknown.
+The branching ratio is $n=\sum_k\alpha_k/\beta_k=1-\eps$; the near-critical regime is $\eps\to0$.
+Write $a_t=(1,S_1(t-),\dots,S_K(t-))\T$ and $\theta=(\mu,\alpha_1,\dots,\alpha_K)\T$, so $\lambda_t=\theta\T a_t$
+and $a_t$ does not depend on $\theta$ (the dictionary $\{\beta_k\}$ is fixed).
+Set $b=\beta_1=\beta_{\min}$, $B=\beta_K=\beta_{\max}$.
+For $K=1$ we write $\beta,\alpha=(1-\eps)\beta$, $S$.
+The parameter set is $\Theta_\eps=\{\mu\ge\mu_{\min},\ \alpha_k\ge0,\ \sum_k\alpha_k/\beta_k\le1-\eps\}$.
+$\pi=\pi_\theta$ is the stationary law of $S$ (it exists for $n<1$, Theorem~\ref{thm:contraction}),
+$\cA$ is the generator of $S$, $\gamma$ is the mixing rate of Section~\ref{sec:dynamics}.
+The \emph{Gamma shape} for $K=1$ is $k=2\beta\mu/\alpha^2$ and $k_0=2\mu/\beta$; for general $K$ see
+Section~\ref{sec:dichotomy}.
+
+\paragraph{Per-event quantities.}
+Gap $i$ is the interval $[t_{i-1},t_i)$, $w_i=t_i-t_{i-1}$.
+On the gap, $\phi(u)=(1,S(t_{i-1}+u))$ (deterministic given the past), $a_i=\phi(w_i)$, $b_i=\int_0^{w_i}\phi$,
+$\lambda^*(u)=\phi\T\theta^*$, $\lambda_\theta(u)=\phi\T\theta$.
+The per-event loss is $\ell_i(\theta)=-\log(a_i\T\theta)+b_i\T\theta$ and $\ell_T(\theta)=\int\log\lambda\dd N-\int\lambda\dd t$
+is the log-likelihood on $[0,T]$ (minus the sum of the $\ell_i$).
+
+\paragraph{Status legend.}
+\Pt{} proved on paper; \Ps{} proved on paper modulo inputs listed in the statement; \Nt{} numerical only; \Ot{} open.
+``Proved'' always means: a hand derivation in which every step is written in the source note.
+It never means machine-checked or refereed.
+
+\paragraph{Label concordance.}
+The source notes reuse several labels (three different ``Theorem B'', three ``Theorem C'', two ``Theorem T'').
+This document renames them; the table in Section~\ref{sec:review} gives the map.
+
+%==============================================================
+\section{Curvature of the per-event loss}\label{sec:curvature}
+%==============================================================
+
+\begin{lemma}[rank-one Hessian; no exp-concavity]\label{lem:rankone}\Pt{}
+For $\ell_i(\theta)=-\log(a_i\T\theta)+b_i\T\theta$ and $\lambda_i=a_i\T\theta$:
+$\nabla\ell_i=b_i-a_i/\lambda_i$ and $\nabla^2\ell_i=a_ia_i\T/\lambda_i^2$.
+Hence $\ell_i$ is convex but strongly convex in no direction orthogonal to $a_i$.
+It is $\eta$-exp-concave iff $\nabla^2\ell_i\succeq\eta\nabla\ell_i\nabla\ell_i\T$.
+If $b_i\not\parallel a_i$ this fails for every $\eta>0$; $b_i\parallel a_i$ would need $\int S_k\dd t=S_k(t_i-)w_i$ for all $k$, i.e.\ $S$ constant on the gap,
+which fails whenever some $S_k>0$.
+\end{lemma}
+\begin{proof}
+Differentiate. The range of $\nabla^2\ell_i$ is $\mathrm{span}(a_i)$, the range of $\nabla\ell_i\nabla\ell_i\T$ is $\mathrm{span}(b_i-a_i/\lambda_i)$;
+if the latter is not contained in the former the matrix inequality cannot hold for any $\eta>0$.
+\end{proof}
+\emph{Example} (checked numerically): $K=1$, $\mu=1,\alpha=0.5,\beta=1$, $S=0.7$, $w=0.8$ gives $\det[a\ b]=-0.1745\ne0$ and $\lambda_{\min}(H-\eta gg\T)=-0.0204\,\eta<0$ for all $\eta$ tried.
+
+\begin{lemma}[expected curvature]\label{lem:expcurv}\Pt{}
+Let the data be stationary with true $\theta^*$, $\lambda^*=a\T\theta^*$, and $L(\theta)=\E[-\lambda^*\log\lambda_\theta+\lambda_\theta]$ (per unit time). Then $\nabla L(\theta^*)=0$,
+$\nabla^2L(\theta)=\E[aa\T\lambda^*/\lambda_\theta^2]$ and $\nabla^2L(\theta^*)=I(\theta^*)=\E[aa\T/\lambda^*]$.
+If $\alpha^*_k>0$ and $c(\theta)=\max(\mu/\mu^*,\max_k\alpha_k/\alpha^*_k)$ then $\lambda_\theta\le c(\theta)\lambda^*$ pathwise and $\nabla^2L(\theta)\succeq c(\theta)^{-2}I(\theta^*)$.
+\end{lemma}
+
+\begin{lemma}[smallest eigenvalue of $I$]\label{lem:lammin}\Pt{}
+$\lambda_{\min}(I(\theta^*))\ge(\eps/\mu^*)\inf_{|v|=1}(\E|v\T a|)^2$.
+\end{lemma}
+\begin{proof}
+$(\E|v\T a|)^2=(\E[\tfrac{|v\T a|}{\sqrt{\lambda^*}}\sqrt{\lambda^*}])^2\le\E[(v\T a)^2/\lambda^*]\,\E\lambda^*$ and $\E\lambda^*=\mu^*/\eps$.
+\end{proof}
+For $K=1$ (exact, using Section~\ref{sec:fisherK1}): $\lambda_{\min}(I)/\eps=0.357,0.669,0.868,0.917$ at $\eps=0.5,0.1,0.02,0.01$ ($\mu=\beta=1$); the bound is tight in order as $\eps\to0$.
+For $K\ge2$ the rate in $\eps$ is also linear as $\eps\to0$ (erratum in Section~\ref{sec:review}).
+
+%==============================================================
+\section{Dynamics of the state: moments and mixing}\label{sec:dynamics}
+%==============================================================
+
+\begin{proposition}[key identity]\label{prop:keyid}\Pt{}
+Let $c_k=\alpha_k/\beta_k$ and $Z=\sum_kc_kS_k$. Then $\cA Z=\mu-\eps\lambda$ and $b\,Z\le\lambda-\mu\le B\,Z$.
+\end{proposition}
+\begin{proof}
+The continuous drift of $Z$ is $-\sum\alpha_kS_k=-(\lambda-\mu)$ and $Z$ jumps by $n$ at rate $\lambda$: $-(\lambda-\mu)+n\lambda=\mu-\eps\lambda$.
+\end{proof}
+
+\begin{lemma}[all moments, uniform in $\eps$]\label{lem:moments}\Pt{}
+For every integer $p\ge1$, $\E_\pi Z^p\le C_p\eps^{-p}$ with $C_0=1$, $C_p=\frac1{pb}\sum_{i=1}^pa_{p,i}C_{p-i}$,
+$a_{p,1}=p\mu+\binom p2B$, $a_{p,i}=\mu\binom pi+B\binom p{i+1}$ ($i\ge2$). With $\mu=b=B=1$: $C_1,\dots,C_6=1,2,5.67,20.7,92.1,484$.
+Consequently $\E\lambda^p\le2^{p-1}(\mu^p+B^pC_p\eps^{-p})$.
+\end{lemma}
+\begin{proof}
+$\cA Z^p=pZ^{p-1}(\mu-\eps\lambda)+\lambda\sum_{j\ge2}\binom pjn^jZ^{p-j}$. Use $\lambda\ge\mu+bZ$ in the first term and $\lambda\le\mu+BZ$, $n\le1$ in the second to get
+$\cA Z^p\le-p\eps bZ^p+\sum_{i=1}^pa_{p,i}Z^{p-i}$. Stationarity ($\E\cA Z^p=0$, justified by Lemma~\ref{lem:expmoment}) and induction with $\eps\le1$ give the claim.
+\end{proof}
+For $K=1$ the exact recursion $p\beta\eps M_p=p\beta\mu M_{p-1}+\sum_{j=2}^p\binom pj\alpha^jM_{p-j+1}$ ($M_p=\E\lambda^p$) gives
+$M_1=\mu/\eps$, $\Var\lambda=\mu\alpha^2/(2\beta\eps^2)$ (the Gamma value) and $M_p(\eps/\mu)^p\to1,\tfrac32,3,\tfrac{15}2,\tfrac{45}2,\tfrac{315}4$ ($k=2$), the Gamma$(2)$ moments.
+
+\begin{lemma}[exponential moment]\label{lem:expmoment}\Pt{}
+For $\theta\le\eps/e$: $\cA e^{\theta Z}\le\theta e^{\theta Z}(\mu-\eps bZ/2)$. Consequently
+$\E_\pi\exp(\eps Z/e)\le2\exp(4\mu/(e\,b))$, $\P(Z\ge t)\le2e^{4\mu/(eb)}e^{-\eps t/e}$, independent of $\eps$.
+\end{lemma}
+\begin{proof}
+$\cA e^{\theta Z}=e^{\theta Z}[\theta\mu+\lambda(e^{\theta n}-1-\theta)]$ and $e^{\theta n}-1-\theta\le-\eps\theta+\theta^2n^2e^{\theta n}/2\le-\eps\theta/2$ for $\theta n\le1$, $\theta\le\eps/e$.
+Truncate at $\psi_M(z)=e^{\theta\min(z,M)}$ (bounded, flat above $M$), use $\E\cA\psi_M=0$ and split at $z_0=4\mu/(\eps b)$ where the bracket $\mu-\eps bZ/2$ is $\ge\mu$ below and $\le-\mu$ above; let $M\to\infty$.
+\end{proof}
+
+\begin{theorem}[contraction in a weighted Wasserstein metric]\label{thm:contraction}\Pt{}
+With $d(s,s')=\sum_kc_k|s_k-s'_k|$: $W_d(P_t(s,\cdot),P_t(s',\cdot))\le e^{-\eps bt}d(s,s')$.
+In particular the stationary law $\pi$ exists, is unique, and the chain is geometrically ergodic without minorisation.
+\end{theorem}
+\begin{proof}
+Drive all copies by one Poisson random measure on $\R_+^2$ (a point at height $u$ fires copy $x$ iff $u\le\lambda_x$). Decay and jumps preserve the componentwise order ($\alpha\ge0$), so for any pair the copies started at $s\wedge s'$ and $s\vee s'$ bracket both chains. For the ordered pair put $D=S^\vee-S^\wedge\ge0$; $D$ decays and jumps by $+\mathbf1$ at rate $\alpha\T D$. Then $\frac{\dd}{\dd t}\E\,c\T D=-\sum\alpha_k\E D_k+n\sum\alpha_k\E D_k=-\eps\sum\alpha_k\E D_k\le-\eps b\,\E c\T D$.
+\end{proof}
+
+\begin{proposition}[exact rate]\label{prop:gamma}\Pt{}
+Let $\gamma\in(0,b)$ be the unique root of $\sum_k\alpha_k/(\beta_k-\gamma)=1$ (it exists since the left side rises from $n<1$ to $+\infty$). Then $\gamma=\eps/\sum_k(\alpha_k/\beta_k^2)+O(\eps^2)$,
+$\eps b\le(\text{contraction rate})\le\gamma\le\eps B/n$, and for $K=1$ all equal $\eps\beta$.
+\end{proposition}
+\begin{proof}
+The means obey $\E[S_t|S_0]-m=e^{Mt}(S_0-m)$, $M=-\mathrm{diag}(\beta)+\mathbf1\alpha\T$; the rightmost eigenvalue $-\gamma$ solves the stated equation; the corresponding left eigenvector yields a linear functional with exactly rate $\gamma$.
+\end{proof}
+
+\begin{lemma}[contraction with the exact rate, any $K$]\label{lem:ellcontr}\Pt{}
+Let $\ell_k\propto\alpha_k/(\beta_k-\gamma)>0$, $\ell\T\mathbf1=1$, $Z_\ell=\ell\T S$. Then $\cA Z_\ell=-\gamma Z_\ell+\mu$ exactly, and
+$\E\,\ell\T|S^1_t-S^2_t|\le e^{-\gamma t}\ell\T|s^1-s^2|$ (same coupling as above: $\cA(\ell\T D)=-\gamma\ell\T D$ for the ordered pair; for a general pair use the three-chain bracket). Hence $W_\ell(\delta_sP_t,\pi)\le e^{-\gamma t}(\ell\T s+\mu/\gamma)$ with no $\eps$-dependent constant.
+\end{lemma}
+
+\begin{lemma}[$K=1$ exponential moments up to $\theta_*$]\label{lem:E0}\Pt{}
+Let $\theta_*>0$ solve $(e^\theta-1)/\theta=\beta/\alpha$ ($\theta_*\approx2\eps/(1-\eps)$), $\kappa_\theta=\beta\theta-\alpha(e^\theta-1)>0$ for $0<\theta<\theta_*$.
+For $V=e^{\theta S}$: $\cA V=V[\mu(e^\theta-1)-\kappa_\theta S]$ exactly. Hence $\cA V\le-(\kappa_\theta s_0/2)V+b_\theta\1\{S\le s_0\}$ with $s_0=2\mu(e^\theta-1)/\kappa_\theta$ and $\sup_t\E e^{\theta S_t}<\infty$ (Foster--Lyapunov).
+With probability $\ge1-e^{-x}/n$, $\max_{i\le n}S_{t_i}\le(\ln C+2\ln n+x)/\theta$.
+\end{lemma}
+\emph{Numerics} (\Nt{}): $\E e^{\theta S_t}$ plateaus (about $5.4$ at $\theta=\theta_*/2$, $\eps=0.3$; $4.3$ at $\eps=0.1$).
+
+\paragraph{Burn-in.} The relaxation time $1/\gamma\asymp1/(\beta\eps)$ in time units is $\asymp\mu/(\beta\eps^2)$ events, not $1/(\mu\eps)$. Information accumulation and state relaxation are different burn-in notions.
+
+%==============================================================
+\section{Fisher information for $K=1$}\label{sec:fisherK1}
+%==============================================================
+
+\begin{lemma}[reduction]\label{lem:reduction}\Pt{}
+$I_T(\theta)=\E_\theta\int_0^Ta_ta_t\T/\lambda_t\dd t$ (the score $\int(a/\lambda)(\dd N-\lambda\dd t)$ is a martingale with predictable variation $\int aa\T/\lambda\dd t$).
+For $K=1$ in the stationary regime, with $m=\E_\pi[1/\lambda]$ and $\E\lambda=\mu/\eps$:
+\[
+I_{\mu\mu}=m,\quad I_{\mu\alpha}=\frac{1-\mu m}{\alpha},\quad I_{\alpha\alpha}=\frac{\E\lambda-2\mu+\mu^2m}{\alpha^2},\quad \det I=\frac{m\,\E\lambda-1}{\alpha^2}.
+\]
+\end{lemma}
+\begin{proof}
+$\cA\lambda=\beta\mu-\beta\eps\lambda$ gives $\E\lambda=\mu/\eps$; substitute $S=(\lambda-\mu)/\alpha$.
+\end{proof}
+
+\begin{lemma}[Laplace transform]\label{lem:laplace}\Pt{}
+$\phi(u)=\E_\pi e^{-u\lambda}$ satisfies $\phi'(u)=-u\beta\mu\,\phi(u)/c(u)$, $c(u)=\eps\beta u+h(\alpha u)=\beta u-(1-e^{-\alpha u})$, $h(x)=e^{-x}-1+x$. Hence
+$\phi(u)=\exp(-\beta\mu\int_0^us/c(s)\dd s)$ and $m=\int_0^\infty\phi(u)\dd u$.
+\end{lemma}
+\begin{proof}
+$\cA e^{-u\lambda}=e^{-u\lambda}[u\beta(\lambda-\mu)+\lambda(e^{-u\alpha}-1)]$ is bounded for $u>0$; $\E_\pi\cA e^{-u\lambda}=0$ and $\E[\lambda e^{-u\lambda}]=-\phi'(u)$. Integrate the linear ODE from $u_0\downarrow0$, $\phi(u_0)\to1$; $1/\lambda=\int_0^\infty e^{-u\lambda}\dd u$ (Tonelli).
+\end{proof}
+
+\begin{lemma}[Gamma factorisation and the remainder $D_\eps$]\label{lem:gammafact}\Pt{}
+$s/c(s)=1/(\eps\beta+\alpha^2s/2)+D_\eps(s)$ with
+\[
+D_\eps(s)=\frac{\alpha^2s^2/2-h(\alpha s)}{(\eps\beta s+h(\alpha s))(\eps\beta+\alpha^2s/2)}\ \ge0,
+\]
+so $\phi=P_\eps F_\eps$, $P_\eps(u)=(1+au/\eps)^{-k_\eps}$ (Gamma Laplace transform; $a=\alpha^2/(2\beta)$, $k_\eps=2\beta\mu/\alpha^2$) and $F_\eps=\exp(-\beta\mu\int_0^uD_\eps)\in(0,1]$ is decreasing. Moreover (repaired Step~2):
+\begin{enumerate}[label=(\roman*),nosep]
+\item $D_\eps(s)\le 2.08/\alpha$ for all $s\ge0$ (for $x=\alpha s\le1.5$: $\le4/(3\alpha)$; for $x\ge1.5$ use convexity $h(x)\ge x\,h(1.5)/1.5$, giving $\le3/(2h(1.5)\alpha)=2.07/\alpha$);
+\item $D_\eps(s)\ge0.166/\alpha$ for $s\ge1/\alpha$ and $\eps\le1/4$ (exact factor $r=\eps/(1-\eps)\le1/3$ and monotonicity of $h(x)/x^2$), so $F_\eps(u)\le\exp(-0.166\,\beta\mu(u-1/\alpha)/\alpha)$.
+\end{enumerate}
+All constants were checked numerically (true suprema $\alpha D_\eps\le1.000$ for $x\ge1.5$; denominator ratio $\le0.667$).
+\end{lemma}
+
+\begin{theorem}[asymptotics of the baseline information, $K=1$]\label{thm:A}\Pt{}
+Let $m_\eps=\E_\pi[1/\lambda]$, $\eps\to0$ with $\mu,\beta$ fixed.
+\begin{enumerate}[label=(\arabic*),nosep]
+\item $k_0>1$: $m_\eps/\eps\to2/(2\mu-\beta)$.
+\item $k_0=1$: $m_\eps/(\eps\ln(1/\eps))\to2/\beta$.
+\item $k_0<1$: $m_\eps/\eps^{k_0}\to C=(2/\beta)^{k_0}\int_0^\infty u^{-k_0}F_0(u)\dd u$, $F_0(u)=\exp(-\beta\mu\int_0^uD_0)$, $D_0(s)=\frac{\beta^2s^2/2-h(\beta s)}{h(\beta s)\beta^2s/2}$.
+\end{enumerate}
+Consequently $I_{\mu\mu}=m_\eps$, $I_{\alpha\alpha}=\mu/(\eps\alpha^2)(1+o(1))$, $I_{\mu\alpha}\to1/\beta$ and $\beta^2\det I\to\beta/(2\mu-\beta)$ when $k_0>1$.
+\end{theorem}
+\begin{proof}
+$m_\eps=\int_0^\infty P_\eps F_\eps\dd u$.
+(1) $m_\eps/\eps=\int_0^\infty(1+av)^{-k_\eps}F_\eps(\eps v)\dd v$; dominated convergence with the majorant $(1+\beta v/4)^{-(1+k_0)/2}$ and $F_\eps(\eps v)\ge e^{-4\beta\mu\eps v/(3\alpha)}\to1$ gives $\int_0^\infty(1+\beta v/2)^{-k_0}\dd v=2/(2\mu-\beta)$.
+(3) $m_\eps=\eps^{k_\eps}\int(\eps+au)^{-k_\eps}F_\eps\dd u$; the integrand is $\le(au)^{-k_\eps}F_\eps$, integrable at $0$ uniformly ($k_\eps\le k'<1$) and exponentially small at infinity by Lemma~\ref{lem:gammafact}(ii).
+(2) For $\beta=2\mu$, $k_\eps-1\sim2\eps$ and on $[0,\delta]$: $\int_0^\delta(1+au/\eps)^{-k_\eps}\dd u=\frac{\eps}{a(k_\eps-1)}[1-(1+a\delta/\eps)^{-(k_\eps-1)}]=(\eps/a)\ln(1/\eps)(1+o(1))$; the part on $[\delta,\infty)$ is $O(\eps)$.
+\end{proof}
+Numerics (\Nt{}, exact $m$): $k_0=2$: $m/\eps\to1.998$ at $\eps=10^{-4}$; $k_0=0.6$: $m/\eps^{k_0}=5.93\uparrow C=6.052$; $k_0=1$: local slope of $m/\eps$ in $\ln(1/\eps)$ is $2.0000$.
+
+\begin{proposition}[cold start]\label{prop:cold}\Pt{} (for the bound) / \Nt{} (for the coefficients)
+Starting from $S_0=0$ (any $K$): $\E Z_t\le\mu t$, hence $\E\lambda_t\le\mu(1+Bt)$ and by Jensen
+$I_T(\mu,\mu)\ge\ln(1+BT)/(\mu B)$.
+For $K=1$, with $M_T=\int_0^T\E[1/\lambda_t]\dd t$, $L_T=\int_0^T\E\lambda_t\dd t$: $I_{\mu\mu}=M_T$, $\det I=(M_TL_T-T^2)/\alpha^2$, and the efficient information satisfies $\eff_T\ge(1-o(1))\ln(1+\beta T)/(\mu\beta)$ at $T=c/\eps$.
+Conjectured (not proved): $M_T\sim\frac{2}{\beta(2\mu-\beta)}\ln T$ ($k_0>1$), $\sim\ln^2T$ ($k_0=1$), $\sim T^{1-k_0}$ ($k_0<1$).
+\end{proposition}
+Consequence: the ``bounded vs divergent'' dichotomy of Section~\ref{sec:dichotomy} is specific to the \emph{stationary} observation model; for the empty-start record the baseline information diverges at least logarithmically for every $k$.
+
+%==============================================================
+\section{The information dichotomy and impossibility}\label{sec:dichotomy}
+%==============================================================
+
+\begin{lemma}[KL bound]\label{lem:KL}\Pt{}
+For $\theta,\theta'$ with the same initial state, $u=\theta'-\theta$ and $\rho=\max(\mu/\mu',\max_k\alpha_k/\alpha'_k)\ge\sup\lambda/\lambda'$,
+\[
+\KL(P_\theta^T\|P_{\theta'}^T)=\E_\theta\!\int_0^T[\lambda\log\tfrac\lambda{\lambda'}-(\lambda-\lambda')]\dd t\le\E_\theta\!\int_0^T\frac{(\lambda-\lambda')^2}{\lambda'}\dd t\le\rho\,u\T I_T(\theta)u.
+\]
+\end{lemma}
+\begin{proof}
+$x\log(x/y)-x+y\le(x-y)^2/y$ and $1/\lambda'\le\rho/\lambda$.
+\end{proof}
+
+\begin{proposition}[efficient information, $K=1$]\label{prop:eff}\Pt{}
+$\eff:=1/(I^{-1})_{\mu\mu}=\det I/I_{\alpha\alpha}=\dfrac{m-\eps/\mu}{1-2\eps+\eps\mu m}$. With $\eps=c/T$ and Theorem~\ref{thm:A}: $T\cdot I_{\mu\mu}\to2c/(2\mu-\beta)$, $T\cdot\eff\to c\beta/(\mu(2\mu-\beta))$ for $k_0>1$ (bounded); $\sim(2c/\beta)\ln(T/c)$ for $k_0=1$; $\sim Cc^{k_0}T^{1-k_0}$ for $k_0<1$.
+\end{proposition}
+
+\begin{theorem}[impossibility given the initial state, $K=1$]\label{thm:B}\Pt{}
+Let $\theta'=(\mu+\delta,\alpha-w\delta)$, $w\ge0$. If $\rho\,u\T I_Tu\le\frac12$ then by Pinsker and Le Cam every estimator satisfies $\max_{\theta,\theta'}\P(|\hat\mu-\mu|\ge\delta/2)\ge\frac14$.
+For stationary observation with $S_0$ revealed and $k_0>1$, $\eps=c/T$, the choice $w=I_{\mu\alpha}/I_{\alpha\alpha}\approx\eps\beta/\mu$ gives $u\T I_Tu=\delta^2T\eff\to\delta^2c\beta/(\mu(2\mu-\beta))$: $\mu$ is not consistently estimable even when $\alpha$ is unknown. For $k_0=1$ (resp.\ $k_0<1$) the error is $\gtrsim(\ln T)^{-1/2}$ (resp.\ $T^{-(1-k_0)/2}$), lower bounds only.
+\end{theorem}
+\begin{remark}
+The statement needs the pre-sample state $S_0$ (equivalently the pre-sample history) to be given. For the stationary record with unobserved past one needs $\TV$ between the laws of the record; see Section~\ref{sec:tv}.
+\end{remark}
+
+\begin{proposition}[ridge direction, any $K$]\label{prop:ridge}\Pt{}
+For $v=(1,-\eps\alpha/\mu)$: $v\T a=1+\eps-\eps\lambda/\mu$ and $v\T Iv=(1+\eps)^2m_K-(\eps/\mu)(1+2\eps)$, $m_K=\E_\pi[1/\lambda]$. Hence $\eff(\mu)\le(1+\eps)^2m_K-(\eps/\mu)(1+2\eps)$ and $\lambda_{\min}(I)\le v\T Iv/|v|^2$.
+\end{proposition}
+
+\paragraph{Notation for general $K$.}
+With $\gamma$ as in Proposition~\ref{prop:gamma}: $\omega_k=\alpha_k/(\beta_k-\gamma)$ ($\sum\omega_k=1$), $Z=\omega\T S$, $\tilde\nu=\sum\omega_k/\beta_k$, $c_0=n/(2\tilde\nu)$,
+\[
+\boxed{k_K:=\mu/c_0=2\mu\tilde\nu/n}\qquad\gamma=\eps/\tilde\nu\ \text{(exact: }1=n+\gamma\tilde\nu),\qquad k_K\to2\mu\sum_k\alpha_k/\beta_k^2\ (\eps\to0).
+\]
+Also $\kappa_k=(c_0\omega_k-\alpha_k/2)/\beta_k$ (so $\sum\kappa_k=0$), $\psi=\kappa\T S$, $\bar\kappa=\max_k|\kappa_k|/\omega_k$. For $K=1$, $k_K=k$ up to $O(\eps)$.
+
+\begin{lemma}\label{lem:G}\Pt{}
+$\cA Z=\mu-\gamma Z$ (since $\sum(\alpha_k-\beta_k\omega_k)S_k=-\gamma Z$), $\E_\pi Z=\mu/\gamma$, and $(b-\gamma)Z\le\lambda-\mu=\sum(\beta_k-\gamma)\omega_kS_k\le(B-\gamma)Z$.
+\end{lemma}
+
+\begin{lemma}[corrected Lyapunov function]\label{lem:H}\Pt{}
+For $z>0$ let $W=Z+z$, $f_z=\log W+\psi/W^2$, $B_z=\max(\mu/z,B-\gamma)$, $C_2=2\bar\kappa\mu+3B_z\bar\kappa$, $C_4=B_z/3+C_2$. Pathwise,
+\[
+\frac{\mu-c_0-2\bar\kappa\gamma}{W}-\gamma-\frac{\mu/2+C_2}{W^2}\ \le\ \cA f_z\ \le\ \frac{\mu-c_0+\gamma z+2\bar\kappa\gamma}{W}-\gamma+\frac{c_0z+C_4}{W^2}.
+\]
+\end{lemma}
+\begin{proof}
+(i) $W$ jumps by $\sum\omega_k=1$ and has drift $-\sum\beta_k\omega_kS_k$, so $\cA\log W=(\mu-\gamma Z)/W+\lambda[\log(1+1/W)-1/W]$.
+(ii) $\psi$ does not jump ($\sum\kappa_k=0$) and
+$\cA(\psi/W^2)=-\sum\kappa_k\beta_kS_k/W^2+2\psi(\sum\beta_k\omega_kS_k-\lambda)/W^3+\lambda\psi(3W+2)/(W^3(W+1)^2)$, using $W^{-2}-(W+1)^{-2}=2W^{-3}-(3W+2)W^{-3}(W+1)^{-2}$.
+(iii) $\sum\beta_k\omega_kS_k-\lambda=\gamma Z-\mu$, $|\psi|\le\bar\kappa W$, $\lambda\le B_zW$, $(3W+2)/(W+1)^2\le3/W$.
+(iv) $\lambda/2+\sum\kappa_k\beta_kS_k=\mu/2+c_0Z$ by the choice of $\kappa$, so $-\lambda/(2W^2)-\sum\kappa_k\beta_kS_k/W^2=-\mu/(2W^2)-c_0/W+c_0z/W^2$.
+(v) $-x^2/2\le\log(1+x)-x\le-x^2/2+x^3/3$. Collect terms.
+\end{proof}
+The corrector $\psi/W^2$ cancels the fluctuation of $\lambda/W$ and leaves the Gamma-type coefficient $c_0$; without it only the worst case $B$ is available (this gives the weaker region $2\mu>n^2B$ of an earlier version).
+Checked pathwise on $2\times10^5$ random states in each of $30$ (parameter set, $z$) cases: both inequalities hold (min slack $+3\times10^{-7}$).
+Justification of $\E_\pi\cA f_z=0$: $f_z$ is integrable ($W\ge z$), $\cA f_z$ is bounded, jumps of $f_z$ are bounded, so $f_z(S_t)-f_z(S_0)-\int\cA f_z$ is a true martingale.
+
+\begin{theorem}[$\E[1/\lambda]=O(\eps)$ when $k_K>1$]\label{thm:E}\Pt{}
+Let $\delta_0=\mu-c_0=c_0(k_K-1)>0$, $\eps$ small with $2\bar\kappa\gamma\le\delta_0/4$ and $z\ge4(\mu/2+C_2)/\delta_0$. Then $\E_\pi[1/W]\le2\gamma/\delta_0$ and
+\[
+\E_\pi[1/\lambda]\le\max\!\Big(\frac z\mu,\frac1{b-\gamma}\Big)\frac{2\eps}{\tilde\nu\,\delta_0}=O(\eps).
+\]
+\end{theorem}
+\begin{proof}
+Lower bound of Lemma~\ref{lem:H}, $W^{-2}\le(zW)^{-1}$ and $\E\cA f_z=0$ give $0\ge(\delta_0-\delta_0/4-\delta_0/4)\E[1/W]-\gamma$. Finally $W/\lambda\le\max(z/\mu,1/(b-\gamma))$ and $\gamma=\eps/\tilde\nu$.
+\end{proof}
+
+\begin{theorem}[$\E[1/\lambda]\gtrsim\eps^{k_K+\eta}$ when $k_K<1$]\label{thm:F}\Pt{}
+For every $\eta>0$ there are $c_\eta,\eps_\eta>0$ with $\E_\pi[1/\lambda]\ge c_\eta\eps^{k_K+\eta}$ for $\eps\le\eps_\eta$; in particular $\E_\pi[1/\lambda]/\eps\to\infty$.
+\end{theorem}
+\begin{proof}
+Put $a(z)=\E_\pi[1/(Z+z)]$, so $-a'(z)=\E_\pi[1/W^2]$. The upper bound of Lemma~\ref{lem:H} with $\E\cA f_z=0$ gives $(c_0z+C_4)(-a'(z))\ge\gamma+(c_0-\mu-\gamma z-2\bar\kappa\gamma)a(z)$. For $1\le z\le\eta/\gamma$ the bracket is $\ge\theta:=c_0-\mu-\eta-2\bar\kappa\gamma>0$; integrate $-a'/a\ge\theta/(c_0z+C_4)$ over $[1,\eta/\gamma]$ ($C_4$ is independent of $z\ge1$): $a(1)\ge a(\eta/\gamma)[(c_0\eta/\gamma+C_4)/(c_0+C_4)]^{\theta/c_0}$. Jensen and $\E Z=\mu/\gamma$: $a(\eta/\gamma)\ge\gamma/(\mu+\eta)$, so $a(1)\ge c\gamma^{1-\theta/c_0}$ with $1-\theta/c_0=k_K+(\eta+2\bar\kappa\gamma)/c_0$. Finally $1/\lambda\ge1/(\max(\mu,B)(Z+1))$.
+\end{proof}
+
+\begin{corollary}[impossibility, stationary, any $K$, given the pre-sample state]\label{cor:Eprime}\Pt{}
+Let $k_K>1$, $\eps=c/T$, $\theta'=(\mu+\delta,\alpha(1-\eps\delta/\mu))$ (ridge pair, $\rho=1/(1-\eps\delta/\mu)$). By Lemma~\ref{lem:KL}, Proposition~\ref{prop:ridge} and Theorem~\ref{thm:E},
+$\KL\le\rho(1+\eps)^2cC\delta^2$, independent of $T$; hence no estimator of $\mu$ is consistent, with or without $\alpha$ known. For $k_K<1$ the $\alpha$-known information diverges ($T\,I_{\mu\mu}\gtrsim T^{1-k_K-\eta}$).
+\end{corollary}
+\emph{Numerics} (\Nt{}): $K=2$, $\beta=(1,2)$, $\mu=1.5$: $\E[1/\lambda]/\eps=1.13,1.145$ at $\eps=0.05,0.02$ (conjectured limit $2/(2\mu-1/\nu_1)=1.2$); the explicit bound of Theorem~\ref{thm:E} is $18$--$19\times$ loose.
+
+\paragraph{Open at this level.} The matching upper bound for $k_K<1$ (the score has a random, mixed-normal normaliser $\int\!\dd t/\lambda$; numerically the MLE is close to mixed normal under the observed-information scaling and heavy-tailed under the expected one); divergence of the \emph{efficient} information for $K\ge2$, $k_K<1$ (numerically $\eff/m\to1$); the borderline $k_K=1$ for $K\ge2$; cold-start coefficients.
+
+%==============================================================
+\section{Spectrum of the Fisher matrix, $K\ge2$}\label{sec:spectrum}
+%==============================================================
+
+\begin{lemma}[window inequality]\label{lem:window}\Pt{}
+For every $h>0$, $I\succeq J_h:=\frac1h\E_\pi\int_0^h\phi_s\phi_s\T\lambda_s^{-1}e^{-\Lambda_s(u)}\dd u$ where $\phi_s(u)=(1,s_ke^{-\beta_ku})$, $\lambda_s=\mu+\sum\alpha_ks_ke^{-\beta_ku}$, $\Lambda_s(u)=\int_0^u\lambda_s$.
+(Keep only the event of no arrival in $[0,u)$, of conditional probability $e^{-\Lambda_s(u)}$.) $J_h\to I$ as $h\to0$, so the bound is not independent of $I$.
+\end{lemma}
+A route via the Gram matrix of $\{1,e^{-\beta_ku}\}$ is valid but vacuous (it forces $h\lesssim\eps/\mu$ and $\lambda_{\min}(G_h)\sim h^{2K+1}$; $10^{-6}$ to $10^{-16}$ of the truth).
+
+\begin{theorem}[truncation bound on $\lambda_{\min}(I)$]\label{thm:trunc}\Ps{}
+Let $M=\E_\pi[aa\T]$. For every $L>0$, $p\ge2$:
+\[
+\lambda_{\min}(I)\ \ge\ \frac1L\Big[\lambda_{\min}(M)-\big(\E|a|^4\big)^{1/2}\big(\E\lambda^p/L^p\big)^{1/2}\Big].
+\]
+\end{theorem}
+\begin{proof}
+$1/\lambda\ge1/L$ on $\{\lambda\le L\}$ so $I\succeq\E[aa\T\1\{\lambda\le L\}]/L$; for unit $v$, $\E[(v\T a)^2\1\{\lambda>L\}]\le(\E(v\T a)^4)^{1/2}\P(\lambda>L)^{1/2}$ and Markov.
+\end{proof}
+Ingredients are explicit: $M$ solves the linear systems $Am=-\mu\mathbf1$ and $(\beta_i+\beta_j)Q_{ij}-\sum_k\alpha_k(Q_{ki}+Q_{kj})=\mu(m_i+m_j)+\E\lambda$ (checked against Monte Carlo to $1$--$3\%$); the moments come from Lemma~\ref{lem:moments}.
+\Nt{} The bound is $20$--$400\times$ below the truth for $K\le3$; it is non-vacuous. It depends on $\bar\kappa,\ell_{\min}$ and $\lambda_{\min}(M)$ but a closed form in $(K,\text{grid ratio})$ was not obtained.
+
+\begin{proposition}[three-tier structure]\label{prop:tiers}
+For $\eps\to0$ the spectrum of $I$ has (in $\alpha$-coordinates)
+\begin{center}
+\begin{tabular}{@{}llll@{}}\toprule
+tier & direction & size & mult.\\\midrule
+top (``$n$-direction'') & $\propto(0,1/\beta_k)=\nabla_\alpha n$ & $\approx1.7$--$1.8/\eps$ & 1\\
+middle (shape) & $w$ with $\sum w_k/\beta_k=0$ & $O(1)$, grid dependent & $K-1$\\
+ridge & $(1,-\eps\alpha/\mu)$ & $\approx\eps/(\mu(k-1))$ ($k>1$), $\sim\eps^k$ ($k<1$) & 1\\\bottomrule
+\end{tabular}
+\end{center}
+\Pt{}: $\lambda_{\min}(I)\le v\T Iv/|v|^2=O(\eps)$ for the ridge vector when $k_K>1$ (Proposition~\ref{prop:ridge} with Theorem~\ref{thm:E}); $\lambda_{\max}(I)\ge(\mu/\eps-2\mu)/|\alpha|^2$ (test vector $\alpha/|\alpha|$); for $K=1$ both are exact.
+\Nt{} (stationary Monte Carlo): the top eigenvector overlaps $1/\hat\beta$ as predicted ($0.800$, $0.571$ for $K=2,3$); the ridge value $0.533\eps$ matches $0.53\eps$ for $K=2$, $\beta=(1,2)$, $\mu=1.5$; the middle tier follows the spectral heuristic $w\T Rw\approx\frac1{2\pi}\int|a_w|^2/|D|^2\dd\omega$ to $2$--$15\%$.
+At moderate $\eps$ a shape direction can be smaller than the ridge (for $K=3$, $\beta=(1,2,4)$ the smallest eigenvector is a time-scale mixture down to $\eps\approx0.007$); the smallest middle eigenvalue collapses geometrically in $K$ and grid compression ($K=5$, ratio $1.5$: $1.3\times10^{-5}$).
+\end{proposition}
+
+%==============================================================
+\section{Projection onto the constraint set}\label{sec:projection}
+%==============================================================
+
+\begin{proposition}[diagonal metric, any $K$]\label{prop:projdiag}\Pt{} (algorithm) / \Nt{} (check)
+Minimise $\sum_kd_k(x_k-y_k)^2$ s.t.\ $x\ge0$, $\sum_kx_k/\beta_k\le1-\eps$: if $\max(y,0)$ is feasible return it; otherwise $x_k=\max(0,y_k-\tau/(\beta_kd_k))$ with $\tau>0$ solving the piecewise-linear decreasing budget equation (sort breakpoints, $O(K\log K)$). Checked against SLSQP on $300$ instances (difference $4\times10^{-6}$). $\mu$ separates: $\mu\leftarrow\max(y_\mu,\mu_{\min})$.
+\end{proposition}
+The diagonal projection is non-expansive only in the diagonal metric. In the $F$-norm of the Newton recursion it violates non-expansiveness in $0.7$--$4.6\%$ of steps and inflates regret by $\approx10\times$ for tight boxes; do not use it for the regret analysis.
+
+\begin{proposition}[exact $F$-norm projection onto a box, $K=1$]\label{prop:projbox}\Pt{}
+For $\Theta_c=[\mu_{lo},\mu_{hi}]\times[\alpha_{lo},\alpha_{hi}]$ and $F\succ0$, the minimiser of $\norm{x-y}_F^2$ over $\Theta_c$ is among: the unconstrained point, the four edge minimisers (fix one coordinate at a bound and minimise over the other, then clip), the four corners. Cost $O(1)$. Being the metric projection onto a convex set, $\norm{\Pi^F(y)-x}_F\le\norm{y-x}_F$ for all $x\in\Theta_c$.
+\end{proposition}
+For $K\ge2$ the $F$-norm projection onto $\{\mu\ge\mu_{lo},\alpha_k\ge\alpha_{lo,k},\sum\alpha_k/\beta_k\le1-\eps\}$ is a general convex QP (not implemented): \Ot{}.
